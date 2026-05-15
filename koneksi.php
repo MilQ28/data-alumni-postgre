@@ -1,4 +1,4 @@
-// #1
+
 <?php
 $host     = 'localhost';
 $dbname   = 'db_alumni';
@@ -13,13 +13,3 @@ if (!$conn) {
 
 mysqli_set_charset($conn, 'utf8mb4');
 ?>
-
-// #2
-<?php
-
-$conn = mysqli_connect("localhost", "root", "", "db_alumni");
-
-if (!$conn) {
-    die("Koneksi gagal");
-}
-
