@@ -1,4 +1,4 @@
--- --------------------------------------------------------
+﻿-- --------------------------------------------------------
 -- Database: db_alumni
 -- --------------------------------------------------------
 
@@ -11,7 +11,7 @@ USE `db_alumni`;
 
 CREATE TABLE `alumni` (
   `id_alumni`   INT(11)       NOT NULL AUTO_INCREMENT,
-  `nim`         VARCHAR(20)   NOT NULL,
+  `nis`         VARCHAR(20)   NOT NULL,
   `nama`        VARCHAR(100)  NOT NULL,
   `angkatan`    YEAR          NOT NULL,
   `jurusan`     VARCHAR(100)  NOT NULL,
@@ -53,5 +53,5 @@ INSERT INTO `users` (`user_id`, `username`, `password`, `role`, `status`) VALUES
 -- Contoh data alumni
 -- --------------------------------------------------------
 
-INSERT INTO `alumni` (`nim`, `nama`, `angkatan`, `jurusan`, `email`, `no_hp`, `pekerjaan`, `perusahaan`, `alamat`) VALUES
+INSERT INTO `alumni` (`nis`, `nama`, `angkatan`, `jurusan`, `email`, `no_hp`, `pekerjaan`, `perusahaan`, `alamat`) VALUES
 ('553241167', 'Syamil Cholid Atsani', 2024, 'Rekayasa Perangkat Lunak', 'syamil@email.com', '0812345678910', 'Software Engineer', 'Nvidia + OpenAI', 'Pringsewu, Lampung');

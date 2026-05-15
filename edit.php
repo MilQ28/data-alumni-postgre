@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
@@ -16,10 +16,17 @@ requireAdmin();
 include 'navbar.php';
 
 $id = (int)($_GET['id'] ?? 0);
-$stmt = $pdo->prepare("SELECT * FROM alumni WHERE id_alumni=?");
-$stmt->execute([$id]);
-$alumni = $stmt->fetch();
-if (!$alumni) { echo '<div class="page-wrapper"><div class="alert alert-error">Data tidak ditemukan.</div></div>'; exit; }
+$stmt = mysqli_prepare($conn, "SELECT * FROM alumni WHERE id_alumni=?");
+mysqli_stmt_bind_param($stmt, 'i', $id);
+mysqli_stmt_execute($stmt);
+$res = mysqli_stmt_get_result($stmt);
+$alumni = mysqli_fetch_assoc($res);
+mysqli_stmt_close($stmt);
+
+if (!$alumni) {
+    echo '<div class="page-wrapper"><div class="alert alert-error">Data tidak ditemukan.</div></div>';
+    exit;
+}
 
 $error = $success = '';
 $jurusan_list = [
@@ -29,7 +36,7 @@ $jurusan_list = [
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nim        = trim($_POST['nim']        ?? '');
+    $nis        = trim($_POST['nis']        ?? '');
     $nama       = trim($_POST['nama']       ?? '');
     $angkatan   = trim($_POST['angkatan']   ?? '');
     $jurusan    = trim($_POST['jurusan']    ?? '');
@@ -39,17 +46,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $perusahaan = trim($_POST['perusahaan'] ?? '');
     $alamat     = trim($_POST['alamat']     ?? '');
 
-    if (!$nim||!$nama||!$angkatan||!$jurusan||!$email||!$no_hp) {
+    if (!$nis || !$nama || !$angkatan || !$jurusan || !$email || !$no_hp) {
         $error = 'Field wajib tidak boleh kosong.';
     } else {
-        $s = $pdo->prepare("SELECT id_alumni FROM alumni WHERE email=? AND id_alumni!=?");
-        $s->execute([$email,$id]);
-        if ($s->fetch()) { $error = 'Email sudah digunakan.'; }
-        else {
-            $pdo->prepare("UPDATE alumni SET nim=?,nama=?,angkatan=?,jurusan=?,email=?,no_hp=?,pekerjaan=?,perusahaan=?,alamat=? WHERE id_alumni=?")
-                ->execute([$nim,$nama,$angkatan,$jurusan,$email,$no_hp,$pekerjaan,$perusahaan,$alamat,$id]);
+        $s = mysqli_prepare($conn, "SELECT id_alumni FROM alumni WHERE email=? AND id_alumni!=?");
+        mysqli_stmt_bind_param($s, 'si', $email, $id);
+        mysqli_stmt_execute($s);
+        $sres = mysqli_stmt_get_result($s);
+        mysqli_stmt_close($s);
+
+        if (mysqli_fetch_assoc($sres)) {
+            $error = 'Email sudah digunakan.';
+        } else {
+            $stmt = mysqli_prepare($conn, "UPDATE alumni SET nis=?,nama=?,angkatan=?,jurusan=?,email=?,no_hp=?,pekerjaan=?,perusahaan=?,alamat=? WHERE id_alumni=?");
+            mysqli_stmt_bind_param($stmt, 'ssissssssi', $nis, $nama, $angkatan, $jurusan, $email, $no_hp, $pekerjaan, $perusahaan, $alamat, $id);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
             $success = 'Data berhasil diperbarui.';
-            $stmt->execute([$id]); $alumni = $stmt->fetch();
+
+            $stmt = mysqli_prepare($conn, "SELECT * FROM alumni WHERE id_alumni=?");
+            mysqli_stmt_bind_param($stmt, 'i', $id);
+            mysqli_stmt_execute($stmt);
+            $res = mysqli_stmt_get_result($stmt);
+            $alumni = mysqli_fetch_assoc($res);
+            mysqli_stmt_close($stmt);
         }
     }
 }
@@ -74,10 +94,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <form method="POST" class="auth-form">
       <div class="form-row">
         <div class="form-group">
-          <label>NIM <span class="req">*</span></label>
+          <label>NIS <span class="req">*</span></label>
           <div class="input-wrapper">
             <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>
-            <input type="text" name="nim" required value="<?= htmlspecialchars($alumni['nim']) ?>">
+            <input type="text" name="nis" required value="<?= htmlspecialchars($alumni['nis']) ?>">
           </div>
         </div>
         <div class="form-group">

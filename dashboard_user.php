@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
@@ -19,9 +19,12 @@ include 'navbar.php';
 $id_alumni = $_SESSION['id_alumni'];
 $myData = null;
 if ($id_alumni) {
-    $stmt = $pdo->prepare("SELECT * FROM alumni WHERE id_alumni = ?");
-    $stmt->execute([$id_alumni]);
-    $myData = $stmt->fetch();
+    $stmt = mysqli_prepare($conn, "SELECT * FROM alumni WHERE id_alumni = ?");
+    mysqli_stmt_bind_param($stmt, 'i', $id_alumni);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $myData = mysqli_fetch_assoc($res);
+    mysqli_stmt_close($stmt);
 }
 
 // Semua alumni (bisa dilihat user)
@@ -29,14 +32,35 @@ $search  = trim($_GET['search'] ?? '');
 $jurusan = trim($_GET['jurusan'] ?? '');
 $where   = [];
 $params  = [];
-if ($search) { $where[] = "(nama LIKE ? OR nim LIKE ? OR pekerjaan LIKE ?)"; $params = array_merge($params, ["%$search%","%$search%","%$search%"]); }
-if ($jurusan){ $where[] = "jurusan = ?"; $params[] = $jurusan; }
-$sql = "SELECT * FROM alumni" . ($where ? " WHERE ".implode(" AND ",$where) : "") . " ORDER BY created_at DESC";
-$stmt = $pdo->prepare($sql);
-$stmt->execute($params);
-$alumniList = $stmt->fetchAll();
+$types   = '';
 
-$jurusanList = $pdo->query("SELECT DISTINCT jurusan FROM alumni ORDER BY jurusan")->fetchAll(PDO::FETCH_COLUMN);
+if ($search) {
+    $where[] = "(nama LIKE ? OR nis LIKE ? OR pekerjaan LIKE ?)";
+    $s = "%$search%";
+    $params = array_merge($params, [$s, $s, $s]);
+    $types .= 'sss';
+}
+if ($jurusan) {
+    $where[] = "jurusan = ?";
+    $params[] = $jurusan;
+    $types .= 's';
+}
+
+$sql = "SELECT * FROM alumni" . ($where ? " WHERE " . implode(" AND ", $where) : "") . " ORDER BY created_at DESC";
+$stmt = mysqli_prepare($conn, $sql);
+if ($params) {
+    mysqli_stmt_bind_param($stmt, $types, ...$params);
+}
+mysqli_stmt_execute($stmt);
+$res = mysqli_stmt_get_result($stmt);
+$alumniList = mysqli_fetch_all($res, MYSQLI_ASSOC);
+mysqli_stmt_close($stmt);
+
+$res2 = mysqli_query($conn, "SELECT DISTINCT jurusan FROM alumni ORDER BY jurusan");
+$jurusanList = [];
+while ($row = mysqli_fetch_assoc($res2)) {
+    $jurusanList[] = $row['jurusan'];
+}
 ?>
 
 <div class="page-wrapper">
@@ -85,7 +109,7 @@ $jurusanList = $pdo->query("SELECT DISTINCT jurusan FROM alumni ORDER BY jurusan
         <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
-        <input type="text" name="search" placeholder="Cari nama, NIM, pekerjaan..." value="<?= htmlspecialchars($search) ?>">
+        <input type="text" name="search" placeholder="Cari nama, NIS, pekerjaan..." value="<?= htmlspecialchars($search) ?>">
       </div>
       <div class="input-wrapper">
         <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -129,7 +153,7 @@ $jurusanList = $pdo->query("SELECT DISTINCT jurusan FROM alumni ORDER BY jurusan
       </div>
       <div class="alumni-card-body">
         <h4><?= htmlspecialchars($a['nama']) ?></h4>
-        <p class="alumni-nim"><code><?= htmlspecialchars($a['nim']) ?></code></p>
+        <p class="alumni-nis"><code><?= htmlspecialchars($a['nis']) ?></code></p>
         <span class="tag"><?= htmlspecialchars($a['jurusan']) ?></span>
         <div class="alumni-meta">
           <span>

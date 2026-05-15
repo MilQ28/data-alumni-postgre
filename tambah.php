@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
@@ -23,7 +23,7 @@ $jurusan_list = [
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nim        = trim($_POST['nim']        ?? '');
+    $nis        = trim($_POST['nis']        ?? '');
     $nama       = trim($_POST['nama']       ?? '');
     $angkatan   = trim($_POST['angkatan']   ?? '');
     $jurusan    = trim($_POST['jurusan']    ?? '');
@@ -33,17 +33,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $perusahaan = trim($_POST['perusahaan'] ?? '');
     $alamat     = trim($_POST['alamat']     ?? '');
 
-    if (!$nim||!$nama||!$angkatan||!$jurusan||!$email||!$no_hp) {
+    if (!$nis || !$nama || !$angkatan || !$jurusan || !$email || !$no_hp) {
         $error = 'Field wajib tidak boleh kosong.';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = 'Format email tidak valid.';
     } else {
-        $s = $pdo->prepare("SELECT id_alumni FROM alumni WHERE email=?");
-        $s->execute([$email]);
-        if ($s->fetch()) { $error = 'Email sudah terdaftar.'; }
-        else {
-            $pdo->prepare("INSERT INTO alumni (nim,nama,angkatan,jurusan,email,no_hp,pekerjaan,perusahaan,alamat) VALUES (?,?,?,?,?,?,?,?,?)")
-                ->execute([$nim,$nama,$angkatan,$jurusan,$email,$no_hp,$pekerjaan,$perusahaan,$alamat]);
+        $s = mysqli_prepare($conn, "SELECT id_alumni FROM alumni WHERE email=?");
+        mysqli_stmt_bind_param($s, 's', $email);
+        mysqli_stmt_execute($s);
+        $sres = mysqli_stmt_get_result($s);
+        mysqli_stmt_close($s);
+
+        if (mysqli_fetch_assoc($sres)) {
+            $error = 'Email sudah terdaftar.';
+        } else {
+            $stmt = mysqli_prepare($conn, "INSERT INTO alumni (nis,nama,angkatan,jurusan,email,no_hp,pekerjaan,perusahaan,alamat) VALUES (?,?,?,?,?,?,?,?,?)");
+            mysqli_stmt_bind_param($stmt, 'ssissssss', $nis, $nama, $angkatan, $jurusan, $email, $no_hp, $pekerjaan, $perusahaan, $alamat);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
             $success = 'Data alumni berhasil ditambahkan.';
         }
     }
@@ -74,10 +81,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
       <div class="form-row">
         <div class="form-group">
-          <label>NIM <span class="req">*</span></label>
+          <label>NIS <span class="req">*</span></label>
           <div class="input-wrapper">
             <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-            <input type="text" name="nim" required value="<?= htmlspecialchars($_POST['nim'] ?? '') ?>">
+            <input type="text" name="nis" required value="<?= htmlspecialchars($_POST['nis'] ?? '') ?>">
           </div>
         </div>
         <div class="form-group">

@@ -16,10 +16,18 @@ requireAdmin();
 include 'navbar.php';
 
 $id = (int)($_GET['id'] ?? 0);
-$stmt = $pdo->prepare("SELECT u.*, a.nama FROM users u LEFT JOIN alumni a ON u.id_alumni=a.id_alumni WHERE u.user_id=?");
-$stmt->execute([$id]);
-$user = $stmt->fetch();
-if (!$user) { echo '<div class="page-wrapper"><div class="alert alert-error">Pengguna tidak ditemukan.</div></div>'; exit; }
+
+$stmt = mysqli_prepare($conn, "SELECT u.*, a.nama FROM users u LEFT JOIN alumni a ON u.id_alumni=a.id_alumni WHERE u.user_id=?");
+mysqli_stmt_bind_param($stmt, 'i', $id);
+mysqli_stmt_execute($stmt);
+$res = mysqli_stmt_get_result($stmt);
+$user = mysqli_fetch_assoc($res);
+mysqli_stmt_close($stmt);
+
+if (!$user) {
+    echo '<div class="page-wrapper"><div class="alert alert-error">Pengguna tidak ditemukan.</div></div>';
+    exit;
+}
 
 $error = $success = '';
 
@@ -31,14 +39,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $allowedRoles = isSuperAdmin() ? ['user','admin','superadmin'] : ['user','admin'];
     if (!in_array($role, $allowedRoles)) $role = $user['role'];
 
-    $pdo->prepare("UPDATE users SET role=?, status=? WHERE user_id=?")->execute([$role,$status,$id]);
+    $stmt = mysqli_prepare($conn, "UPDATE users SET role=?, status=? WHERE user_id=?");
+    mysqli_stmt_bind_param($stmt, 'ssi', $role, $status, $id);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+
     if ($new_pw) {
-        if (strlen($new_pw) < 6) { $error = 'Password minimal 6 karakter.'; }
-        else {
-            $pdo->prepare("UPDATE users SET password=? WHERE user_id=?")->execute([password_hash($new_pw, PASSWORD_DEFAULT), $id]);
+        if (strlen($new_pw) < 6) {
+            $error = 'Password minimal 6 karakter.';
+        } else {
+            $hashed = password_hash($new_pw, PASSWORD_DEFAULT);
+            $stmt = mysqli_prepare($conn, "UPDATE users SET password=? WHERE user_id=?");
+            mysqli_stmt_bind_param($stmt, 'si', $hashed, $id);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
         }
     }
-    if (!$error) { $success = 'Data pengguna diperbarui.'; $stmt->execute([$id]); $user = $stmt->fetch(); }
+
+    if (!$error) {
+        $success = 'Data pengguna diperbarui.';
+        // Refresh data user
+        $stmt = mysqli_prepare($conn, "SELECT u.*, a.nama FROM users u LEFT JOIN alumni a ON u.id_alumni=a.id_alumni WHERE u.user_id=?");
+        mysqli_stmt_bind_param($stmt, 'i', $id);
+        mysqli_stmt_execute($stmt);
+        $res = mysqli_stmt_get_result($stmt);
+        $user = mysqli_fetch_assoc($res);
+        mysqli_stmt_close($stmt);
+    }
 }
 ?>
 
@@ -68,7 +95,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <label>Role</label>
           <div class="input-wrapper">
             <select name="role">
-              <?php $roles = isSuperAdmin() ? ['user','admin','superadmin'] : ['user','admin']; foreach ($roles as $r): ?>
+              <?php
+              $roles = isSuperAdmin() ? ['user','admin','superadmin'] : ['user','admin'];
+              foreach ($roles as $r): ?>
               <option value="<?= $r ?>" <?= $user['role']===$r?'selected':'' ?>><?= ucfirst($r) ?></option>
               <?php endforeach; ?>
             </select>

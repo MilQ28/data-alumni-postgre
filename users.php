@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
@@ -18,19 +18,36 @@ include 'navbar.php';
 $search = trim($_GET['search'] ?? '');
 $status = trim($_GET['status'] ?? '');
 
-$where = ["u.role = 'user'"];
+$where  = ["u.role = 'user'"];
 $params = [];
-if ($search) { $where[] = "(u.username LIKE ? OR a.nama LIKE ? OR a.nim LIKE ?)"; $params = array_merge($params, ["%$search%","%$search%","%$search%"]); }
-if ($status) { $where[] = "u.status = ?"; $params[] = $status; }
+$types  = '';
 
-$sql = "SELECT u.*, a.nama, a.nim, a.jurusan, a.angkatan, a.email as email_alumni 
-        FROM users u 
+if ($search) {
+    $where[] = "(u.username LIKE ? OR a.nama LIKE ? OR a.nis LIKE ?)";
+    $s = "%$search%";
+    $params = array_merge($params, [$s, $s, $s]);
+    $types .= 'sss';
+}
+if ($status) {
+    $where[] = "u.status = ?";
+    $params[] = $status;
+    $types .= 's';
+}
+
+$sql = "SELECT u.*, a.nama, a.nis, a.jurusan, a.angkatan, a.email as email_alumni
+        FROM users u
         LEFT JOIN alumni a ON u.id_alumni = a.id_alumni
         WHERE " . implode(" AND ", $where) . "
         ORDER BY u.created_at DESC";
-$stmt = $pdo->prepare($sql);
-$stmt->execute($params);
-$users = $stmt->fetchAll();
+
+$stmt = mysqli_prepare($conn, $sql);
+if ($params) {
+    mysqli_stmt_bind_param($stmt, $types, ...$params);
+}
+mysqli_stmt_execute($stmt);
+$res = mysqli_stmt_get_result($stmt);
+$users = mysqli_fetch_all($res, MYSQLI_ASSOC);
+mysqli_stmt_close($stmt);
 ?>
 
 <div class="page-wrapper">
@@ -49,7 +66,7 @@ $users = $stmt->fetchAll();
     <form method="GET" class="search-form">
       <div class="input-wrapper">
         <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" name="search" placeholder="Cari username, nama, NIM..." value="<?= htmlspecialchars($search) ?>">
+        <input type="text" name="search" placeholder="Cari username, nama, NIS..." value="<?= htmlspecialchars($search) ?>">
       </div>
       <div class="input-wrapper">
         <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -70,7 +87,7 @@ $users = $stmt->fetchAll();
       <table class="data-table">
         <thead>
           <tr>
-            <th>#</th><th>Username</th><th>Nama Alumni</th><th>NIM</th>
+            <th>#</th><th>Username</th><th>Nama Alumni</th><th>NIS</th>
             <th>Jurusan</th><th>Angkatan</th><th>Status</th><th>Terdaftar</th><th>Aksi</th>
           </tr>
         </thead>
@@ -83,7 +100,7 @@ $users = $stmt->fetchAll();
             <td><?= $i + 1 ?></td>
             <td><strong><?= htmlspecialchars($u['username']) ?></strong></td>
             <td><?= htmlspecialchars($u['nama'] ?? '—') ?></td>
-            <td><code><?= htmlspecialchars($u['nim'] ?? '—') ?></code></td>
+            <td><code><?= htmlspecialchars($u['nis'] ?? '—') ?></code></td>
             <td><?= htmlspecialchars($u['jurusan'] ?? '—') ?></td>
             <td><?= $u['angkatan'] ?? '—' ?></td>
             <td>

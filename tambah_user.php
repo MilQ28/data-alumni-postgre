@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
@@ -23,7 +23,8 @@ $jurusan_list = [
 ];
 
 // Ambil alumni tanpa user
-$alumniTanpaUser = $pdo->query("SELECT a.id_alumni, a.nama, a.nim FROM alumni a WHERE NOT EXISTS (SELECT 1 FROM users u WHERE u.id_alumni=a.id_alumni) ORDER BY a.nama")->fetchAll();
+$res = mysqli_query($conn, "SELECT a.id_alumni, a.nama, a.nis FROM alumni a WHERE NOT EXISTS (SELECT 1 FROM users u WHERE u.id_alumni=a.id_alumni) ORDER BY a.nama");
+$alumniTanpaUser = mysqli_fetch_all($res, MYSQLI_ASSOC);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username  = trim($_POST['username']  ?? '');
@@ -39,14 +40,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (strlen($password) < 6) {
         $error = 'Password minimal 6 karakter.';
     } else {
-        $s = $pdo->prepare("SELECT user_id FROM users WHERE username=?");
-        $s->execute([$username]);
-        if ($s->fetch()) { $error = 'Username sudah digunakan.'; }
-        else {
+        $s = mysqli_prepare($conn, "SELECT user_id FROM users WHERE username=?");
+        mysqli_stmt_bind_param($s, 's', $username);
+        mysqli_stmt_execute($s);
+        $sres = mysqli_stmt_get_result($s);
+        mysqli_stmt_close($s);
+
+        if (mysqli_fetch_assoc($sres)) {
+            $error = 'Username sudah digunakan.';
+        } else {
             $hashed = password_hash($password, PASSWORD_DEFAULT);
-            $alId = $id_alumni ?: null;
-            $pdo->prepare("INSERT INTO users (username,password,role,id_alumni,status) VALUES (?,?,?,?,'approved')")
-                ->execute([$username,$hashed,$role,$alId]);
+            $alId   = ($id_alumni !== '') ? (int)$id_alumni : null;
+
+            $stmt = mysqli_prepare($conn, "INSERT INTO users (username,password,role,id_alumni,status) VALUES (?,?,?,?,'approved')");
+            mysqli_stmt_bind_param($stmt, 'ssss', $username, $hashed, $role, $alId);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
             $success = 'Pengguna berhasil ditambahkan.';
         }
     }
@@ -107,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <select name="id_alumni">
               <option value="">-- Tidak dihubungkan --</option>
               <?php foreach ($alumniTanpaUser as $a): ?>
-              <option value="<?= $a['id_alumni'] ?>"><?= htmlspecialchars($a['nama']) ?> (<?= htmlspecialchars($a['nim']) ?>)</option>
+              <option value="<?= $a['id_alumni'] ?>"><?= htmlspecialchars($a['nama']) ?> (<?= htmlspecialchars($a['nis']) ?>)</option>
               <?php endforeach; ?>
             </select>
           </div>

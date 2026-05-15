@@ -1,4 +1,4 @@
-/* ===== RESET & BASE ===== */
+﻿/* ===== RESET & BASE ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
@@ -699,8 +699,8 @@ body {
   margin-bottom: 3px;
 }
 
-.alumni-nim { margin-bottom: 8px; }
-.alumni-nim code {
+.alumni-nis { margin-bottom: 8px; }
+.alumni-nis code {
   background: #f1f5f9;
   padding: 2px 7px;
   border-radius: 4px;

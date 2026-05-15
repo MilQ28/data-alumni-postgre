@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
@@ -16,16 +16,28 @@ requireAdmin();
 include 'navbar.php';
 
 // Stats
-$totalAlumni = $pdo->query("SELECT COUNT(*) FROM alumni")->fetchColumn();
-$totalUsers  = $pdo->query("SELECT COUNT(*) FROM users WHERE role='user'")->fetchColumn();
-$pending     = $pdo->query("SELECT COUNT(*) FROM users WHERE status='pending'")->fetchColumn();
-$jurusanStat = $pdo->query("SELECT jurusan, COUNT(*) as total FROM alumni GROUP BY jurusan ORDER BY total DESC LIMIT 5")->fetchAll();
-$angkatanStat= $pdo->query("SELECT angkatan, COUNT(*) as total FROM alumni GROUP BY angkatan ORDER BY angkatan DESC LIMIT 6")->fetchAll();
+$res = mysqli_query($conn, "SELECT COUNT(*) FROM alumni");
+$totalAlumni = mysqli_fetch_row($res)[0];
+
+$res = mysqli_query($conn, "SELECT COUNT(*) FROM users WHERE role='user'");
+$totalUsers = mysqli_fetch_row($res)[0];
+
+$res = mysqli_query($conn, "SELECT COUNT(*) FROM users WHERE status='pending'");
+$pending = mysqli_fetch_row($res)[0];
+
+$res = mysqli_query($conn, "SELECT jurusan, COUNT(*) as total FROM alumni GROUP BY jurusan ORDER BY total DESC LIMIT 5");
+$jurusanStat = mysqli_fetch_all($res, MYSQLI_ASSOC);
+
+$res = mysqli_query($conn, "SELECT angkatan, COUNT(*) as total FROM alumni GROUP BY angkatan ORDER BY angkatan DESC LIMIT 6");
+$angkatanStat = mysqli_fetch_all($res, MYSQLI_ASSOC);
 
 // Recent alumni
-$recentAlumni = $pdo->query("SELECT * FROM alumni ORDER BY created_at DESC LIMIT 8")->fetchAll();
+$res = mysqli_query($conn, "SELECT * FROM alumni ORDER BY created_at DESC LIMIT 8");
+$recentAlumni = mysqli_fetch_all($res, MYSQLI_ASSOC);
+
 // Pending users
-$pendingUsers = $pdo->query("SELECT u.*, a.nama, a.nim, a.jurusan, a.angkatan FROM users u LEFT JOIN alumni a ON u.id_alumni=a.id_alumni WHERE u.status='pending' ORDER BY u.created_at DESC")->fetchAll();
+$res = mysqli_query($conn, "SELECT u.*, a.nama, a.nis, a.jurusan, a.angkatan FROM users u LEFT JOIN alumni a ON u.id_alumni=a.id_alumni WHERE u.status='pending' ORDER BY u.created_at DESC");
+$pendingUsers = mysqli_fetch_all($res, MYSQLI_ASSOC);
 ?>
 
 <div class="page-wrapper">
@@ -107,13 +119,13 @@ $pendingUsers = $pdo->query("SELECT u.*, a.nama, a.nim, a.jurusan, a.angkatan FR
       <table class="data-table">
         <thead>
           <tr>
-            <th>NIM</th><th>Nama</th><th>Jurusan</th><th>Angkatan</th><th>Username</th><th>Aksi</th>
+            <th>NIS</th><th>Nama</th><th>Jurusan</th><th>Angkatan</th><th>Username</th><th>Aksi</th>
           </tr>
         </thead>
         <tbody>
           <?php foreach ($pendingUsers as $pu): ?>
           <tr>
-            <td><code><?= htmlspecialchars($pu['nim'] ?? '-') ?></code></td>
+            <td><code><?= htmlspecialchars($pu['nis'] ?? '-') ?></code></td>
             <td><?= htmlspecialchars($pu['nama'] ?? '-') ?></td>
             <td><?= htmlspecialchars($pu['jurusan'] ?? '-') ?></td>
             <td><?= htmlspecialchars($pu['angkatan'] ?? '-') ?></td>
@@ -201,12 +213,12 @@ $pendingUsers = $pdo->query("SELECT u.*, a.nama, a.nim, a.jurusan, a.angkatan FR
     <div class="table-wrap">
       <table class="data-table">
         <thead>
-          <tr><th>NIM</th><th>Nama</th><th>Jurusan</th><th>Angkatan</th><th>Pekerjaan</th><th>Aksi</th></tr>
+          <tr><th>NIS</th><th>Nama</th><th>Jurusan</th><th>Angkatan</th><th>Pekerjaan</th><th>Aksi</th></tr>
         </thead>
         <tbody>
           <?php foreach ($recentAlumni as $a): ?>
           <tr>
-            <td><code><?= htmlspecialchars($a['nim']) ?></code></td>
+            <td><code><?= htmlspecialchars($a['nis']) ?></code></td>
             <td><?= htmlspecialchars($a['nama']) ?></td>
             <td><span class="tag"><?= htmlspecialchars($a['jurusan']) ?></span></td>
             <td><?= $a['angkatan'] ?></td>

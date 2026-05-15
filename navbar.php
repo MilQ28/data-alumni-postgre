@@ -54,10 +54,12 @@ $current = basename($_SERVER['PHP_SELF']);
       <?php
       $foto = '';
       if (isset($_SESSION['id_alumni'])) {
-          global $pdo;
-          $s = $pdo->prepare("SELECT foto_profil, nama FROM alumni WHERE id_alumni = ?");
-          $s->execute([$_SESSION['id_alumni']]);
-          $row = $s->fetch();
+          $s = mysqli_prepare($conn, "SELECT foto_profil, nama FROM alumni WHERE id_alumni = ?");
+          mysqli_stmt_bind_param($s, 'i', $_SESSION['id_alumni']);
+          mysqli_stmt_execute($s);
+          $res = mysqli_stmt_get_result($s);
+          $row = mysqli_fetch_assoc($res);
+          mysqli_stmt_close($s);
           $foto = $row['foto_profil'] ?? '';
           $namaAlumni = $row['nama'] ?? $_SESSION['username'];
       } else {

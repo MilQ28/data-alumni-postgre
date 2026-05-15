@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
@@ -31,9 +31,12 @@ if (isAdmin() && isset($_GET['id'])) {
     $target_id = (int)$_GET['id'];
 }
 
-$stmt = $pdo->prepare("SELECT * FROM alumni WHERE id_alumni = ?");
-$stmt->execute([$target_id]);
-$alumni = $stmt->fetch();
+$stmt = mysqli_prepare($conn, "SELECT * FROM alumni WHERE id_alumni = ?");
+mysqli_stmt_bind_param($stmt, 'i', $target_id);
+mysqli_stmt_execute($stmt);
+$res = mysqli_stmt_get_result($stmt);
+$alumni = mysqli_fetch_assoc($res);
+mysqli_stmt_close($stmt);
 
 if (!$alumni) {
     echo '<div class="page-wrapper"><div class="alert alert-error">Data alumni tidak ditemukan.</div></div>';
@@ -60,11 +63,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canEdit) {
         } else {
             $filename = 'foto_' . $target_id . '_' . time() . '.' . $ext;
             move_uploaded_file($_FILES['foto']['tmp_name'], "uploads/foto_profil/$filename");
-            // Hapus foto lama
             if ($alumni['foto_profil'] && file_exists("uploads/foto_profil/".$alumni['foto_profil'])) {
                 unlink("uploads/foto_profil/".$alumni['foto_profil']);
             }
-            $pdo->prepare("UPDATE alumni SET foto_profil=? WHERE id_alumni=?")->execute([$filename, $target_id]);
+            $stmt = mysqli_prepare($conn, "UPDATE alumni SET foto_profil=? WHERE id_alumni=?");
+            mysqli_stmt_bind_param($stmt, 'si', $filename, $target_id);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
             $alumni['foto_profil'] = $filename;
         }
     }
@@ -85,17 +90,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canEdit) {
             $error = 'Format email tidak valid.';
         } else {
             // Cek email duplikat (selain dirinya)
-            $s = $pdo->prepare("SELECT id_alumni FROM alumni WHERE email=? AND id_alumni!=?");
-            $s->execute([$email, $target_id]);
-            if ($s->fetch()) {
+            $s = mysqli_prepare($conn, "SELECT id_alumni FROM alumni WHERE email=? AND id_alumni!=?");
+            mysqli_stmt_bind_param($s, 'si', $email, $target_id);
+            mysqli_stmt_execute($s);
+            $sres = mysqli_stmt_get_result($s);
+            mysqli_stmt_close($s);
+
+            if (mysqli_fetch_assoc($sres)) {
                 $error = 'Email sudah digunakan alumni lain.';
             } else {
-                $pdo->prepare("UPDATE alumni SET nama=?,angkatan=?,jurusan=?,email=?,no_hp=?,pekerjaan=?,perusahaan=?,alamat=? WHERE id_alumni=?")
-                    ->execute([$nama,$angkatan,$jurusan,$email,$no_hp,$pekerjaan,$perusahaan,$alamat,$target_id]);
+                $stmt = mysqli_prepare($conn, "UPDATE alumni SET nama=?,angkatan=?,jurusan=?,email=?,no_hp=?,pekerjaan=?,perusahaan=?,alamat=? WHERE id_alumni=?");
+                mysqli_stmt_bind_param($stmt, 'sissssssi', $nama, $angkatan, $jurusan, $email, $no_hp, $pekerjaan, $perusahaan, $alamat, $target_id);
+                mysqli_stmt_execute($stmt);
+                mysqli_stmt_close($stmt);
                 $success = 'Profil berhasil diperbarui.';
-                $stmt = $pdo->prepare("SELECT * FROM alumni WHERE id_alumni=?");
-                $stmt->execute([$target_id]);
-                $alumni = $stmt->fetch();
+
+                $stmt = mysqli_prepare($conn, "SELECT * FROM alumni WHERE id_alumni=?");
+                mysqli_stmt_bind_param($stmt, 'i', $target_id);
+                mysqli_stmt_execute($stmt);
+                $res = mysqli_stmt_get_result($stmt);
+                $alumni = mysqli_fetch_assoc($res);
+                mysqli_stmt_close($stmt);
             }
         }
     }
@@ -109,8 +124,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canEdit) {
         } elseif ($new_pw !== $conf_pw) {
             $error = 'Konfirmasi password tidak cocok.';
         } else {
-            $stmt = $pdo->prepare("UPDATE users SET password=? WHERE " . ($target_id == $id_alumni ? "id_alumni=?" : "id_alumni=?"));
-            $stmt->execute([password_hash($new_pw, PASSWORD_DEFAULT), $target_id]);
+            $hashed = password_hash($new_pw, PASSWORD_DEFAULT);
+            $stmt = mysqli_prepare($conn, "UPDATE users SET password=? WHERE id_alumni=?");
+            mysqli_stmt_bind_param($stmt, 'si', $hashed, $target_id);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
             $success = 'Profil dan password berhasil diperbarui.';
         }
     }
@@ -167,7 +185,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canEdit) {
         <p class="profile-jurusan"><?= htmlspecialchars($alumni['jurusan']) ?></p>
         <div class="profile-badges">
           <span class="badge badge-blue">Angkatan <?= $alumni['angkatan'] ?></span>
-          <span class="badge badge-gray">NIM: <?= htmlspecialchars($alumni['nim']) ?></span>
+          <span class="badge badge-gray">NIS: <?= htmlspecialchars($alumni['nis']) ?></span>
         </div>
         <div class="profile-contact">
           <div class="contact-item">
@@ -216,10 +234,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canEdit) {
               </div>
             </div>
             <div class="form-group">
-              <label>NIM (tidak bisa diubah)</label>
+              <label>NIS (tidak bisa diubah)</label>
               <div class="input-wrapper">
                 <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-                <input type="text" value="<?= htmlspecialchars($alumni['nim']) ?>" disabled>
+                <input type="text" value="<?= htmlspecialchars($alumni['nis']) ?>" disabled>
               </div>
             </div>
           </div>
