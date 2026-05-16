@@ -30,8 +30,8 @@
   // ==============================================================================
   // Cari alumni yang ID-nya belum ada di tabel `users`
   // Tujuannya agar admin bisa membuatkan akun untuk alumni yang belum punya akun
-  $res = mysqli_query($conn, "SELECT a.id_alumni, a.nama, a.nis FROM alumni a WHERE NOT EXISTS (SELECT 1 FROM users u WHERE u.id_alumni=a.id_alumni) ORDER BY a.nama");
-  $alumniTanpaUser = mysqli_fetch_all($res, MYSQLI_ASSOC);
+  $res = pg_query($conn, "SELECT a.id_alumni, a.nama, a.nis FROM alumni a WHERE NOT EXISTS (SELECT 1 FROM users u WHERE u.id_alumni=a.id_alumni) ORDER BY a.nama");
+  $alumniTanpaUser = pg_fetch_all($res) ?: [];
 
   // ==============================================================================
   // 2. PROSES TAMBAH AKUN PENGGUNA
@@ -55,13 +55,9 @@
       $error = 'Password minimal 6 karakter.';
     } else {
       // Cek apakah username sudah ada di database
-      $s = mysqli_prepare($conn, "SELECT user_id FROM users WHERE username=?");
-      mysqli_stmt_bind_param($s, 's', $username);
-      mysqli_stmt_execute($s);
-      $sres = mysqli_stmt_get_result($s);
-      mysqli_stmt_close($s);
+      $sres = pg_query_params($conn, "SELECT user_id FROM users WHERE username=$1", array($username));
 
-      if (mysqli_fetch_assoc($sres)) {
+      if (pg_fetch_assoc($sres)) {
         $error = 'Username sudah digunakan.';
       } else {
         // Enkripsi password menggunakan fungsi bawaan PHP agar aman tidak mudah dibajak
@@ -71,10 +67,9 @@
         $alId   = ($id_alumni !== '') ? (int)$id_alumni : null;
 
         // Masukkan data akun baru ke database. Statusnya otomatis 'approved' karena admin yang buat
-        $stmt = mysqli_prepare($conn, "INSERT INTO users (username,password,role,id_alumni,status) VALUES (?,?,?,?,'approved')");
-        mysqli_stmt_bind_param($stmt, 'ssss', $username, $hashed, $role, $alId);
-        mysqli_stmt_execute($stmt);
-        mysqli_stmt_close($stmt);
+        $sql = "INSERT INTO users (username,password,role,id_alumni,status) VALUES ($1,$2,$3,$4,'approved')";
+        pg_query_params($conn, $sql, array($username, $hashed, $role, $alId));
+        
         $success = 'Pengguna berhasil ditambahkan.';
       }
     }

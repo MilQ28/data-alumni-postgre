@@ -23,25 +23,21 @@ $sql = "SELECT a.id_alumni, a.nis, a.nama, a.jurusan, a.angkatan, a.email
         WHERE u.id_alumni IS NULL";
 
 $params = [];
-$types = '';
 
 if ($search) {
-    $sql .= " AND (a.nama LIKE ? OR a.nis LIKE ? OR a.jurusan LIKE ?)";
+    $sql .= " AND (a.nama ILIKE $1 OR a.nis ILIKE $2 OR a.jurusan ILIKE $3)";
     $s = "%$search%";
     $params = [$s, $s, $s];
-    $types = 'sss';
 }
 
 $sql .= " ORDER BY a.nama ASC";
 
-$stmt = mysqli_prepare($conn, $sql);
 if ($params) {
-    mysqli_stmt_bind_param($stmt, $types, ...$params);
+    $res = pg_query_params($conn, $sql, $params);
+} else {
+    $res = pg_query($conn, $sql);
 }
-mysqli_stmt_execute($stmt);
-$res = mysqli_stmt_get_result($stmt);
-$alumni = mysqli_fetch_all($res, MYSQLI_ASSOC);
-mysqli_stmt_close($stmt);
+$alumni = pg_fetch_all($res) ?: [];
 ?>
 
 <div class="page-wrapper">

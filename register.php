@@ -43,13 +43,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Password minimal 6 karakter.';
     } else {
         // 3. Cek apakah username sudah ada yang pakai
-        $stmt = mysqli_prepare($conn, "SELECT user_id FROM users WHERE username = ?");
-        mysqli_stmt_bind_param($stmt, 's', $username);
-        mysqli_stmt_execute($stmt);
-        $res = mysqli_stmt_get_result($stmt);
-        mysqli_stmt_close($stmt);
+        $sql = "SELECT user_id FROM users WHERE username = $1";
+        $res = pg_query_params($conn, $sql, array($username));
 
-        if (mysqli_fetch_assoc($res)) {
+        if (pg_fetch_assoc($res)) {
             $error = 'Username sudah digunakan.';
         } else {
             // 4. Proses berdasarkan jenis pendaftaran
@@ -60,26 +57,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $error = 'Silakan pilih nama Anda dari daftar alumni.';
                 } else {
                     // Pastikan nama yang dipilih benar-benar valid dan belum punya akun
-                    $stmtCek = mysqli_prepare($conn, "SELECT id_alumni FROM alumni WHERE id_alumni = ? AND id_alumni NOT IN (SELECT id_alumni FROM users WHERE id_alumni IS NOT NULL)");
-                    mysqli_stmt_bind_param($stmtCek, 'i', $id_alumni_pilihan);
-                    mysqli_stmt_execute($stmtCek);
-                    $resCek = mysqli_stmt_get_result($stmtCek);
-                    if (!mysqli_fetch_assoc($resCek)) {
+                    $sqlCek = "SELECT id_alumni FROM alumni WHERE id_alumni = $1 AND id_alumni NOT IN (SELECT id_alumni FROM users WHERE id_alumni IS NOT NULL)";
+                    $resCek = pg_query_params($conn, $sqlCek, array($id_alumni_pilihan));
+                    if (!pg_fetch_assoc($resCek)) {
                         $error = 'Data alumni tidak valid atau sudah memiliki akun.';
                     }
-                    mysqli_stmt_close($stmtCek);
 
                     // Jika lolos pengecekan, buatkan akun user-nya
                     if (!$error) {
                         $hashed = password_hash($password, PASSWORD_DEFAULT); // Enkripsi password
-                        $stmt2 = mysqli_prepare($conn, "INSERT INTO users (username, password, role, id_alumni, status) VALUES (?,?,'user',?,'pending')");
-                        mysqli_stmt_bind_param($stmt2, 'ssi', $username, $hashed, $id_alumni_pilihan);
-                        if (mysqli_stmt_execute($stmt2)) {
+                        $sql2 = "INSERT INTO users (username, password, role, id_alumni, status) VALUES ($1,$2,'user',$3,'pending')";
+                        if (pg_query_params($conn, $sql2, array($username, $hashed, $id_alumni_pilihan))) {
                             $success = true; // Berhasil!
                         } else {
                             $error = 'Terjadi kesalahan saat membuat akun. Silakan coba lagi.';
                         }
-                        mysqli_stmt_close($stmt2);
                     }
                 }
             } else {
@@ -104,38 +96,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $error = 'Tahun angkatan tidak valid.';
                 } else {
                     // Cek apakah email sudah pernah didaftarkan
-                    $stmt = mysqli_prepare($conn, "SELECT id_alumni FROM alumni WHERE email = ?");
-                    mysqli_stmt_bind_param($stmt, 's', $email);
-                    mysqli_stmt_execute($stmt);
-                    $res = mysqli_stmt_get_result($stmt);
-                    mysqli_stmt_close($stmt);
+                    $sqlEmail = "SELECT id_alumni FROM alumni WHERE email = $1";
+                    $res = pg_query_params($conn, $sqlEmail, array($email));
 
-                    if (mysqli_fetch_assoc($res)) {
+                    if (pg_fetch_assoc($res)) {
                         $error = 'Email ini sudah terdaftar di data alumni.';
                     } else {
                         // Jika aman, masukkan data biodata ke tabel `alumni`
-                        $stmt = mysqli_prepare($conn, "INSERT INTO alumni (nis, nama, angkatan, jurusan, email, no_hp, pekerjaan, perusahaan, alamat) VALUES (?,?,?,?,?,?,?,?,?)");
-                        mysqli_stmt_bind_param($stmt, 'ssissssss', $nis, $nama, $angkatan, $jurusan, $email, $no_hp, $pekerjaan, $perusahaan, $alamat);
+                        $sqlInsert = "INSERT INTO alumni (nis, nama, angkatan, jurusan, email, no_hp, pekerjaan, perusahaan, alamat) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id_alumni";
+                        $resInsert = pg_query_params($conn, $sqlInsert, array($nis, $nama, $angkatan, $jurusan, $email, $no_hp, $pekerjaan, $perusahaan, $alamat));
 
-                        if (mysqli_stmt_execute($stmt)) {
+                        if ($resInsert) {
                             // Ambil ID alumni yang baru saja dibuat
-                            $id_alumni = mysqli_insert_id($conn);
-                            mysqli_stmt_close($stmt);
+                            $row = pg_fetch_assoc($resInsert);
+                            $id_alumni = $row['id_alumni'];
 
                             // Lalu buatkan akun user-nya di tabel `users` (terhubung dengan id_alumni tadi)
                             $hashed = password_hash($password, PASSWORD_DEFAULT);
-                            $stmt2 = mysqli_prepare($conn, "INSERT INTO users (username, password, role, id_alumni, status) VALUES (?,?,'user',?,'pending')");
-                            mysqli_stmt_bind_param($stmt2, 'ssi', $username, $hashed, $id_alumni);
+                            $sql2 = "INSERT INTO users (username, password, role, id_alumni, status) VALUES ($1,$2,'user',$3,'pending')";
 
-                            if (mysqli_stmt_execute($stmt2)) {
+                            if (pg_query_params($conn, $sql2, array($username, $hashed, $id_alumni))) {
                                 $success = true; // Pendaftaran selesai!
                             } else {
                                 $error = 'Terjadi kesalahan saat membuat akun.';
                             }
-                            mysqli_stmt_close($stmt2);
                         } else {
                             $error = 'Terjadi kesalahan. Silakan coba lagi.';
-                            mysqli_stmt_close($stmt);
                         }
                     }
                 }
@@ -145,8 +131,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Ambil data alumni yang belum memiliki akun untuk pilihan dropdown
-$resAlumni = mysqli_query($conn, "SELECT id_alumni, nis, nama FROM alumni WHERE id_alumni NOT IN (SELECT id_alumni FROM users WHERE id_alumni IS NOT NULL) ORDER BY nama ASC");
-$alumniTanpaAkun = mysqli_fetch_all($resAlumni, MYSQLI_ASSOC);
+$resAlumni = pg_query($conn, "SELECT id_alumni, nis, nama FROM alumni WHERE id_alumni NOT IN (SELECT id_alumni FROM users WHERE id_alumni IS NOT NULL) ORDER BY nama ASC");
+$alumniTanpaAkun = pg_fetch_all($resAlumni) ?: [];
 ?>
 <div class="auth-bg register-bg">
   <div class="auth-left">

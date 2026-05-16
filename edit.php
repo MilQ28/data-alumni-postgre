@@ -21,12 +21,9 @@ include 'navbar.php';
 // Ambil ID dari URL (contoh: edit.php?id=5)
 $id = (int)($_GET['id'] ?? 0); 
 
-$stmt = mysqli_prepare($conn, "SELECT * FROM alumni WHERE id_alumni=?");
-mysqli_stmt_bind_param($stmt, 'i', $id); // 'i' = integer (angka)
-mysqli_stmt_execute($stmt);
-$res = mysqli_stmt_get_result($stmt);
-$alumni = mysqli_fetch_assoc($res); // Simpan data di variabel $alumni
-mysqli_stmt_close($stmt);
+$sql = "SELECT * FROM alumni WHERE id_alumni=$1";
+$res = pg_query_params($conn, $sql, array($id));
+$alumni = pg_fetch_assoc($res); // Simpan data di variabel $alumni
 
 // Jika data tidak ada di database (mungkin id salah)
 if (!$alumni) {
@@ -62,31 +59,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Field wajib tidak boleh kosong.';
     } else {
         // Cek apakah email yang baru dimasukkan sudah dipakai orang lain
-        // id_alumni != ? artinya "cek email ini di data lain selain milik saya sendiri"
-        $s = mysqli_prepare($conn, "SELECT id_alumni FROM alumni WHERE email=? AND id_alumni!=?");
-        mysqli_stmt_bind_param($s, 'si', $email, $id);
-        mysqli_stmt_execute($s);
-        $sres = mysqli_stmt_get_result($s);
-        mysqli_stmt_close($s);
+        // id_alumni != $2 artinya "cek email ini di data lain selain milik saya sendiri"
+        $sres = pg_query_params($conn, "SELECT id_alumni FROM alumni WHERE email=$1 AND id_alumni!=$2", array($email, $id));
 
-        if (mysqli_fetch_assoc($sres)) {
+        if (pg_fetch_assoc($sres)) {
             $error = 'Email sudah digunakan oleh alumni lain.';
         } else {
             // Jika email aman, lakukan UPDATE ke database
-            $stmt = mysqli_prepare($conn, "UPDATE alumni SET nis=?,nama=?,angkatan=?,jurusan=?,email=?,no_hp=?,pekerjaan=?,perusahaan=?,alamat=? WHERE id_alumni=?");
-            // s = string, i = integer
-            mysqli_stmt_bind_param($stmt, 'ssissssssi', $nis, $nama, $angkatan, $jurusan, $email, $no_hp, $pekerjaan, $perusahaan, $alamat, $id);
-            mysqli_stmt_execute($stmt);
-            mysqli_stmt_close($stmt);
+            $sql = "UPDATE alumni SET nis=$1,nama=$2,angkatan=$3,jurusan=$4,email=$5,no_hp=$6,pekerjaan=$7,perusahaan=$8,alamat=$9 WHERE id_alumni=$10";
+            pg_query_params($conn, $sql, array($nis, $nama, $angkatan, $jurusan, $email, $no_hp, $pekerjaan, $perusahaan, $alamat, $id));
             $success = 'Data berhasil diperbarui.';
 
             // Ambil ulang data terbaru dari database untuk ditampilkan di form (agar ter-refresh)
-            $stmt = mysqli_prepare($conn, "SELECT * FROM alumni WHERE id_alumni=?");
-            mysqli_stmt_bind_param($stmt, 'i', $id);
-            mysqli_stmt_execute($stmt);
-            $res = mysqli_stmt_get_result($stmt);
-            $alumni = mysqli_fetch_assoc($res);
-            mysqli_stmt_close($stmt);
+            $res = pg_query_params($conn, "SELECT * FROM alumni WHERE id_alumni=$1", array($id));
+            $alumni = pg_fetch_assoc($res);
         }
     }
 }

@@ -35,15 +35,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Pastikan username dan password tidak kosong
     if ($username && $password) {
         // 4. MENCARI PENGGUNA DI DATABASE
-        // Menggunakan "Prepared Statement" (?) untuk mencegah serangan SQL Injection
-        $stmt = mysqli_prepare($conn, "SELECT * FROM users WHERE username = ?");
-        mysqli_stmt_bind_param($stmt, 's', $username); // 's' berarti string
-        mysqli_stmt_execute($stmt);
-        
-        // Ambil hasil pencariannya
-        $result = mysqli_stmt_get_result($stmt);
-        $user = mysqli_fetch_assoc($result); // Ubah hasil menjadi array asosiatif
-        mysqli_stmt_close($stmt);
+        // Menggunakan "Prepared Statement" ($1) untuk mencegah serangan SQL Injection (PostgreSQL)
+        $sql = "SELECT * FROM users WHERE username = $1";
+        $result = pg_query_params($conn, $sql, array($username));
+        $user = pg_fetch_assoc($result); // Ubah hasil menjadi array asosiatif
 
         // 5. PENGECEKAN PASSWORD & STATUS AKUN
         // Jika username ditemukan ($user) DAN password yang diketik cocok dengan password di database

@@ -17,12 +17,9 @@ include 'navbar.php';
 
 $id = (int)($_GET['id'] ?? 0);
 
-$stmt = mysqli_prepare($conn, "SELECT u.*, a.nama FROM users u LEFT JOIN alumni a ON u.id_alumni=a.id_alumni WHERE u.user_id=?");
-mysqli_stmt_bind_param($stmt, 'i', $id);
-mysqli_stmt_execute($stmt);
-$res = mysqli_stmt_get_result($stmt);
-$user = mysqli_fetch_assoc($res);
-mysqli_stmt_close($stmt);
+$sql = "SELECT u.*, a.nama FROM users u LEFT JOIN alumni a ON u.id_alumni=a.id_alumni WHERE u.user_id=$1";
+$res = pg_query_params($conn, $sql, array($id));
+$user = pg_fetch_assoc($res);
 
 if (!$user) {
     echo '<div class="page-wrapper"><div class="alert alert-error">Pengguna tidak ditemukan.</div></div>';
@@ -39,32 +36,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $allowedRoles = isSuperAdmin() ? ['user','admin','superadmin'] : ['user','admin'];
     if (!in_array($role, $allowedRoles)) $role = $user['role'];
 
-    $stmt = mysqli_prepare($conn, "UPDATE users SET role=?, status=? WHERE user_id=?");
-    mysqli_stmt_bind_param($stmt, 'ssi', $role, $status, $id);
-    mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
+    $sql = "UPDATE users SET role=$1, status=$2 WHERE user_id=$3";
+    pg_query_params($conn, $sql, array($role, $status, $id));
 
     if ($new_pw) {
         if (strlen($new_pw) < 6) {
             $error = 'Password minimal 6 karakter.';
         } else {
             $hashed = password_hash($new_pw, PASSWORD_DEFAULT);
-            $stmt = mysqli_prepare($conn, "UPDATE users SET password=? WHERE user_id=?");
-            mysqli_stmt_bind_param($stmt, 'si', $hashed, $id);
-            mysqli_stmt_execute($stmt);
-            mysqli_stmt_close($stmt);
+            $sql = "UPDATE users SET password=$1 WHERE user_id=$2";
+            pg_query_params($conn, $sql, array($hashed, $id));
         }
     }
 
     if (!$error) {
         $success = 'Data pengguna diperbarui.';
         // Refresh data user
-        $stmt = mysqli_prepare($conn, "SELECT u.*, a.nama FROM users u LEFT JOIN alumni a ON u.id_alumni=a.id_alumni WHERE u.user_id=?");
-        mysqli_stmt_bind_param($stmt, 'i', $id);
-        mysqli_stmt_execute($stmt);
-        $res = mysqli_stmt_get_result($stmt);
-        $user = mysqli_fetch_assoc($res);
-        mysqli_stmt_close($stmt);
+        $res = pg_query_params($conn, "SELECT u.*, a.nama FROM users u LEFT JOIN alumni a ON u.id_alumni=a.id_alumni WHERE u.user_id=$1", array($id));
+        $user = pg_fetch_assoc($res);
     }
 }
 ?>

@@ -20,18 +20,18 @@ $status = trim($_GET['status'] ?? '');
 
 $where  = ["u.role = 'user'"];
 $params = [];
-$types  = '';
+$paramIndex = 1;
 
 if ($search) {
-    $where[] = "(u.username LIKE ? OR a.nama LIKE ? OR a.nis LIKE ?)";
+    $where[] = "(u.username ILIKE $$paramIndex OR a.nama ILIKE $" . ($paramIndex+1) . " OR a.nis ILIKE $" . ($paramIndex+2) . ")";
     $s = "%$search%";
     $params = array_merge($params, [$s, $s, $s]);
-    $types .= 'sss';
+    $paramIndex += 3;
 }
 if ($status) {
-    $where[] = "u.status = ?";
+    $where[] = "u.status = $$paramIndex";
     $params[] = $status;
-    $types .= 's';
+    $paramIndex++;
 }
 
 $sql = "SELECT u.*, a.nama, a.nis, a.jurusan, a.angkatan, a.email as email_alumni
@@ -40,14 +40,12 @@ $sql = "SELECT u.*, a.nama, a.nis, a.jurusan, a.angkatan, a.email as email_alumn
         WHERE " . implode(" AND ", $where) . "
         ORDER BY u.created_at DESC";
 
-$stmt = mysqli_prepare($conn, $sql);
 if ($params) {
-    mysqli_stmt_bind_param($stmt, $types, ...$params);
+    $res = pg_query_params($conn, $sql, $params);
+} else {
+    $res = pg_query($conn, $sql);
 }
-mysqli_stmt_execute($stmt);
-$res = mysqli_stmt_get_result($stmt);
-$users = mysqli_fetch_all($res, MYSQLI_ASSOC);
-mysqli_stmt_close($stmt);
+$users = pg_fetch_all($res) ?: [];
 ?>
 
 <div class="page-wrapper">

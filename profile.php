@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
@@ -31,12 +31,8 @@ if (isAdmin() && isset($_GET['id'])) {
     $target_id = (int)$_GET['id'];
 }
 
-$stmt = mysqli_prepare($conn, "SELECT * FROM alumni WHERE id_alumni = ?");
-mysqli_stmt_bind_param($stmt, 'i', $target_id);
-mysqli_stmt_execute($stmt);
-$res = mysqli_stmt_get_result($stmt);
-$alumni = mysqli_fetch_assoc($res);
-mysqli_stmt_close($stmt);
+$res = pg_query_params($conn, "SELECT * FROM alumni WHERE id_alumni = $1", array($target_id));
+$alumni = pg_fetch_assoc($res);
 
 if (!$alumni) {
     echo '<div class="page-wrapper"><div class="alert alert-error">Data alumni tidak ditemukan.</div></div>';
@@ -67,10 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canEdit) {
             if ($alumni['foto_profil'] && file_exists("uploads/foto_profil/".$alumni['foto_profil'])) {
                 unlink("uploads/foto_profil/".$alumni['foto_profil']);
             }
-            $stmt = mysqli_prepare($conn, "UPDATE alumni SET foto_profil=? WHERE id_alumni=?");
-            mysqli_stmt_bind_param($stmt, 'si', $filename, $target_id);
-            mysqli_stmt_execute($stmt);
-            mysqli_stmt_close($stmt);
+            pg_query_params($conn, "UPDATE alumni SET foto_profil=$1 WHERE id_alumni=$2", array($filename, $target_id));
             $alumni['foto_profil'] = $filename;
         }
     }
@@ -91,27 +84,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canEdit) {
             $error = 'Format email tidak valid.';
         } else {
             // Cek email duplikat (selain dirinya)
-            $s = mysqli_prepare($conn, "SELECT id_alumni FROM alumni WHERE email=? AND id_alumni!=?");
-            mysqli_stmt_bind_param($s, 'si', $email, $target_id);
-            mysqli_stmt_execute($s);
-            $sres = mysqli_stmt_get_result($s);
-            mysqli_stmt_close($s);
+            // Cek email duplikat (selain dirinya)
+            $sres = pg_query_params($conn, "SELECT id_alumni FROM alumni WHERE email=$1 AND id_alumni!=$2", array($email, $target_id));
 
-            if (mysqli_fetch_assoc($sres)) {
+            if (pg_fetch_assoc($sres)) {
                 $error = 'Email sudah digunakan alumni lain.';
             } else {
-                $stmt = mysqli_prepare($conn, "UPDATE alumni SET nama=?,angkatan=?,jurusan=?,email=?,no_hp=?,pekerjaan=?,perusahaan=?,alamat=? WHERE id_alumni=?");
-                mysqli_stmt_bind_param($stmt, 'sissssssi', $nama, $angkatan, $jurusan, $email, $no_hp, $pekerjaan, $perusahaan, $alamat, $target_id);
-                mysqli_stmt_execute($stmt);
-                mysqli_stmt_close($stmt);
+                $sql = "UPDATE alumni SET nama=$1,angkatan=$2,jurusan=$3,email=$4,no_hp=$5,pekerjaan=$6,perusahaan=$7,alamat=$8 WHERE id_alumni=$9";
+                pg_query_params($conn, $sql, array($nama, $angkatan, $jurusan, $email, $no_hp, $pekerjaan, $perusahaan, $alamat, $target_id));
                 $success = 'Profil berhasil diperbarui.';
 
-                $stmt = mysqli_prepare($conn, "SELECT * FROM alumni WHERE id_alumni=?");
-                mysqli_stmt_bind_param($stmt, 'i', $target_id);
-                mysqli_stmt_execute($stmt);
-                $res = mysqli_stmt_get_result($stmt);
-                $alumni = mysqli_fetch_assoc($res);
-                mysqli_stmt_close($stmt);
+                $res = pg_query_params($conn, "SELECT * FROM alumni WHERE id_alumni=$1", array($target_id));
+                $alumni = pg_fetch_assoc($res);
             }
         }
     }
@@ -126,10 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canEdit) {
             $error = 'Konfirmasi password tidak cocok.';
         } else {
             $hashed = password_hash($new_pw, PASSWORD_DEFAULT);
-            $stmt = mysqli_prepare($conn, "UPDATE users SET password=? WHERE id_alumni=?");
-            mysqli_stmt_bind_param($stmt, 'si', $hashed, $target_id);
-            mysqli_stmt_execute($stmt);
-            mysqli_stmt_close($stmt);
+            pg_query_params($conn, "UPDATE users SET password=$1 WHERE id_alumni=$2", array($hashed, $target_id));
             $success = 'Profil dan password berhasil diperbarui.';
         }
     }

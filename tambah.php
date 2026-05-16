@@ -46,23 +46,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         // 3. Pengecekan Duplikasi Email
         // Cek apakah email yang dimasukkan sudah ada di tabel alumni
-        $s = mysqli_prepare($conn, "SELECT id_alumni FROM alumni WHERE email=?");
-        mysqli_stmt_bind_param($s, 's', $email);
-        mysqli_stmt_execute($s);
-        $sres = mysqli_stmt_get_result($s);
-        mysqli_stmt_close($s);
+        $sres = pg_query_params($conn, "SELECT id_alumni FROM alumni WHERE email=$1", array($email));
 
-        if (mysqli_fetch_assoc($sres)) {
-            // Jika mysqli_fetch_assoc mengembalikan data, berarti email sudah ada!
+        if (pg_fetch_assoc($sres)) {
+            // Jika pg_fetch_assoc mengembalikan data, berarti email sudah ada!
             $error = 'Email sudah terdaftar.';
         } else {
             // 4. Proses Simpan Data
             // Jika email belum ada, kita bisa simpan data ke database
-            $stmt = mysqli_prepare($conn, "INSERT INTO alumni (nis,nama,angkatan,jurusan,email,no_hp,pekerjaan,perusahaan,alamat) VALUES (?,?,?,?,?,?,?,?,?)");
-            // 'ssissssss' artinya: string, string, integer, string, string, string, string, string, string
-            mysqli_stmt_bind_param($stmt, 'ssissssss', $nis, $nama, $angkatan, $jurusan, $email, $no_hp, $pekerjaan, $perusahaan, $alamat);
-            mysqli_stmt_execute($stmt);
-            mysqli_stmt_close($stmt);
+            $sql = "INSERT INTO alumni (nis,nama,angkatan,jurusan,email,no_hp,pekerjaan,perusahaan,alamat) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)";
+            pg_query_params($conn, $sql, array($nis, $nama, $angkatan, $jurusan, $email, $no_hp, $pekerjaan, $perusahaan, $alamat));
             
             $success = 'Data alumni berhasil ditambahkan.';
         }
