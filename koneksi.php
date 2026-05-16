@@ -1,17 +1,17 @@
 <?php
 // ==============================================================================
 // KONEKSI DATABASE (koneksi.php)
-// File ini berfungsi sebagai jembatan penghubung antara kode PHP dan database PostgreSQL (Supabase)
+// Menggunakan Supabase Connection Pooler agar kompatibel dengan Vercel Serverless
 // ==============================================================================
 
-$host     = 'db.fymxdzbuubvhbljowlul.supabase.co'; // Supabase Host
-$port     = '5432';
-$dbname   = 'postgres'; // Supabase Default Database
-$username = 'postgres'; // Supabase Default User
-$password = '3WHyMBpruKUSj0TL'; // Password dari user
+$host     = 'aws-1-ap-southeast-1.pooler.supabase.com'; // Pooler Host (IPv4 compatible)
+$port     = '6543';                                       // Pooler Port
+$dbname   = 'postgres';
+$username = 'postgres.fymxdzbuubvhbljowlul';             // Pooler Username
+$password = '3WHyMBpruKUSj0TL';
 
-// 1. Melakukan koneksi menggunakan fungsi pg_connect
-$conn_string = "host={$host} port={$port} dbname={$dbname} user={$username} password={$password}";
+// 1. Melakukan koneksi via Connection Pooler (PgBouncer)
+$conn_string = "host={$host} port={$port} dbname={$dbname} user={$username} password={$password} sslmode=require";
 $conn = pg_connect($conn_string);
 
 // 2. Mengecek apakah koneksi berhasil atau gagal
