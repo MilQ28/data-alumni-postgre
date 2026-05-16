@@ -11,7 +11,6 @@
 <body>
 <?php
 require 'auth.php';
-require 'koneksi.php';
 requireAdmin(); // Pastikan hanya admin yang bisa buka halaman ini
 include 'navbar.php';
 

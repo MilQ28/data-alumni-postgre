@@ -11,7 +11,6 @@
 <body>
 <?php
 require 'auth.php';
-require 'koneksi.php';
 requireLogin();
 include 'navbar.php';
 

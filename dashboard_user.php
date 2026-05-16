@@ -11,7 +11,6 @@
 <body>
 <?php
 require 'auth.php';
-require 'koneksi.php';
 requireLogin(); // Wajib login untuk akses halaman ini
 
 // Jika yang login adalah admin, lempar ke dashboard admin

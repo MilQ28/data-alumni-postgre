@@ -13,7 +13,6 @@
 <body>
   <?php
   require 'auth.php';
-  require 'koneksi.php';
   requireAdmin();
   include 'navbar.php';
 
