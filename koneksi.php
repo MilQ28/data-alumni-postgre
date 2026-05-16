@@ -2,7 +2,13 @@
 // ==============================================================================
 // KONEKSI DATABASE (koneksi.php)
 // Menggunakan Supabase Connection Pooler agar kompatibel dengan Vercel Serverless
+// ob_start() menahan semua output ke browser sampai session siap (mencegah error headers)
 // ==============================================================================
+
+// Wajib dipanggil PERTAMA sebelum ada output apapun ke browser
+if (!ob_get_level()) {
+    ob_start();
+}
 
 $host     = 'aws-1-ap-southeast-1.pooler.supabase.com'; // Pooler Host (IPv4 compatible)
 $port     = '6543';                                       // Pooler Port
