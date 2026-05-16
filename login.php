@@ -9,8 +9,8 @@
 </head>
 <body>
 <?php
-// Memulai sesi agar kita bisa menyimpan data login pengguna
-session_start();
+// 1. KONEKSI KE DATABASE (Yang akan memulai Session DB)
+require 'koneksi.php';
 
 // 1. CEK STATUS LOGIN
 // Jika pengguna sudah login (ada session 'user_id'), langsung pindahkan ke halaman dashboard
@@ -21,8 +21,7 @@ if (isset($_SESSION['user_id'])) {
     exit;
 }
 
-// 2. KONEKSI KE DATABASE
-require 'koneksi.php';
+// 2. Variabel Error
 $error = ''; // Variabel untuk menyimpan pesan error jika login gagal
 
 // 3. PROSES FORM SAAT TOMBOL SUBMIT DITEKAN

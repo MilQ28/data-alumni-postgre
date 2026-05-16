@@ -3,6 +3,20 @@
 -- --------------------------------------------------------
 
 -- --------------------------------------------------------
+-- Tabel `sessions` (Wajib untuk Deployment Vercel)
+-- Menyimpan sesi login pengguna di database karena Vercel bersifat Serverless
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS sessions (
+  session_id   VARCHAR(255) PRIMARY KEY,
+  session_data TEXT         NOT NULL,
+  expires_at   TIMESTAMP    NOT NULL
+);
+
+-- Index untuk mempercepat pembersihan sesi expired
+CREATE INDEX IF NOT EXISTS idx_sessions_expires ON sessions (expires_at);
+
+-- --------------------------------------------------------
 -- Tabel `alumni`
 -- --------------------------------------------------------
 

@@ -18,4 +18,7 @@ $conn = pg_connect($conn_string);
 if (!$conn) {
     die('Koneksi database gagal: ' . pg_last_error());
 }
+
+// 3. Menggunakan database untuk menyimpan sesi Vercel Serverless
+require_once __DIR__ . '/session_handler.php';
 ?>

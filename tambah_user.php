@@ -11,7 +11,6 @@
 
 <body>
   <?php
-  session_start();
   require 'auth.php';
   require 'koneksi.php';
   requireAdmin();
