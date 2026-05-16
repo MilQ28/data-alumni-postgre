@@ -1,3 +1,4 @@
+<?php require 'koneksi.php'; ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -9,8 +10,7 @@
 </head>
 <body>
 <?php
-// 1. KONEKSI KE DATABASE (Yang akan memulai Session DB)
-require 'koneksi.php';
+// 1. KONEKSI sudah dimuat di atas sebelum HTML
 
 // 1. CEK STATUS LOGIN
 // Jika pengguna sudah login (ada session 'user_id'), langsung pindahkan ke halaman dashboard
