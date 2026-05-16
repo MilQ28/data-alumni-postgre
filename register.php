@@ -175,6 +175,12 @@ $alumniTanpaAkun = mysqli_fetch_all($resAlumni, MYSQLI_ASSOC);
       </div>
 
       <?php else: ?>
+      <div style="margin-bottom: 20px;">
+        <a href="login.php" style="display:inline-flex; align-items:center; gap:6px; color:var(--text-muted); text-decoration:none; font-size:14px; font-weight:500; transition:color .2s;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px; height:16px;"><polyline points="15 18 9 12 15 6"/></svg>
+          Kembali ke Login
+        </a>
+      </div>
       <div class="auth-card-header">
         <h2>Daftar sebagai Alumni</h2>
         <p>Isi data lengkap Anda untuk verifikasi keanggotaan</p>

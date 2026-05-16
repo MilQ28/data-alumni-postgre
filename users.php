@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
@@ -56,10 +56,16 @@ mysqli_stmt_close($stmt);
       <h1 class="page-title">Manajemen Pengguna</h1>
       <p class="page-sub">Kelola akun alumni yang terdaftar</p>
     </div>
-    <a href="tambah_user.php" class="btn-primary">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      Tambah Pengguna
-    </a>
+    <div class="header-actions">
+      <a href="dashboard_admin.php" class="btn-outline">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        Kembali
+      </a>
+      <a href="tambah_user.php" class="btn-primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Tambah Pengguna
+      </a>
+    </div>
   </div>
 
   <div class="section-card">

@@ -71,7 +71,7 @@
         <h1 class="page-title">Tambah Pengguna</h1>
         <p class="page-sub">Buat akun pengguna baru</p>
       </div>
-      <a href="dashboard_admin.php" class="btn-outline">
+      <a href="users.php" class="btn-outline">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="15 18 9 12 15 6" />
         </svg>
