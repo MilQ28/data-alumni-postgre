@@ -150,25 +150,28 @@ $alumniTanpaAkun = mysqli_fetch_all($resAlumni, MYSQLI_ASSOC);
 ?>
 <div class="auth-bg register-bg">
   <div class="auth-left">
-    <div class="brand-block">
-      <!-- Logo sekolah. Ubah src jika ingin ganti gambar logo -->
-      <div class="brand-logo">
-        <img src="assets/logo.png" alt="Logo SMK Telkom Lampung">
+    <div class="top-content">
+      <div class="brand-block">
+        <!-- Logo sekolah. Ubah src jika ingin ganti gambar logo -->
+        <div class="brand-logo">
+          <img src="assets/logo.png" alt="Logo SMK Telkom Lampung">
+        </div>
+        <h1 class="brand-name">SMK Telkom Lampung</h1>
+        <p class="brand-tagline">Daftarkan akun alumni Anda di portal resmi sekolah</p>
       </div>
-      <h1 class="brand-name">SMK Telkom Lampung</h1>
-      <p class="brand-tagline">Daftarkan akun alumni Anda di portal resmi sekolah</p>
+      
+      <div class="reg-steps" style="margin-top: 32px;">
+        <div class="step active"><div class="step-num">1</div><div class="step-text">Data Akun</div></div>
+        <div class="step-line"></div>
+        <div class="step active"><div class="step-num">2</div><div class="step-text">Data Alumni</div></div>
+        <div class="step-line"></div>
+        <div class="step"><div class="step-num">3</div><div class="step-text">Verifikasi Admin</div></div>
+      </div>
     </div>
     <div class="auth-decoration">
       <div class="deco-circle c1"></div>
       <div class="deco-circle c2"></div>
       <div class="deco-circle c3"></div>
-    </div>
-    <div class="reg-steps">
-      <div class="step active"><div class="step-num">1</div><div class="step-text">Data Akun</div></div>
-      <div class="step-line"></div>
-      <div class="step active"><div class="step-num">2</div><div class="step-text">Data Alumni</div></div>
-      <div class="step-line"></div>
-      <div class="step"><div class="step-num">3</div><div class="step-text">Verifikasi Admin</div></div>
     </div>
     <div class="auth-quote"><p>"Bersama alumni, membangun nama SMK Telkom Lampung di tingkat nasional."</p></div>
   </div>
