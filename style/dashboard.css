@@ -1,26 +1,45 @@
-﻿/* ===== RESET & BASE ===== */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* ============================================================
+   dashboard.css — Halaman Dashboard Admin & User
+   Portal Alumni SMK Telkom Lampung
+   ============================================================
 
+   PANDUAN UNTUK PEMULA:
+   Ubah nilai variabel di :root {} di bawah untuk mengganti tema.
+   Cukup ubah di satu tempat, seluruh dashboard akan berubah.
+   ============================================================ */
+
+/* ============================================================
+   BAGIAN 1: VARIABEL WARNA TEMA (Ubah di sini)
+   ============================================================ */
 :root {
-  --navy:       #0f2744;
-  --navy-mid:   #1a3a5c;
-  --navy-light: #274d74;
-  --gold:       #c9a84c;
-  --gold-light: #e8c97a;
-  --cream:      #f4f6fb;
+  /* === WARNA UTAMA SMK TELKOM (Ubah di sini) === */
+  --primary:      #C0000C;   /* Merah utama SMK Telkom */
+  --primary-dark: #8B0000;   /* Merah lebih gelap */
+  --primary-light:#fee2e2;   /* Merah sangat muda */
+  --primary-mid:  #d32f2f;   /* Merah sedang */
+
+  /* === WARNA NETRAL === */
   --white:      #ffffff;
-  --text:       #1a2a3a;
-  --text-muted: #6b7f94;
-  --border:     #e2e8f0;
+  --cream:      #f8f9fa;     /* Background halaman dashboard */
+  --text:       #1E1E1E;     /* Teks utama */
+  --text-muted: #6b7f94;     /* Teks abu-abu */
+  --border:     #e2e8f0;     /* Garis border */
+
+  /* === WARNA PESAN SISTEM === */
   --error:      #e53935;
   --error-bg:   #fff0f0;
   --success:    #2e7d32;
   --success-bg: #f0fff4;
+
+  /* === UKURAN & BAYANGAN === */
   --radius:     12px;
-  --shadow-sm:  0 2px 8px rgba(15,39,68,.06);
-  --shadow:     0 4px 24px rgba(15,39,68,.09);
-  --nav-h:      68px;
+  --shadow-sm:  0 2px 8px rgba(0,0,0,.06);
+  --shadow:     0 4px 24px rgba(0,0,0,.10);
+  --nav-h:      68px;        /* Tinggi navbar */
 }
+
+/* ===== RESET DASAR ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
   font-family: 'DM Sans', sans-serif;
@@ -30,19 +49,22 @@ body {
   min-height: 100vh;
 }
 
-/* ========== NAVBAR ========== */
+/* ============================================================
+   BAGIAN 2: NAVBAR (Bilah Navigasi Atas)
+   ============================================================ */
 .navbar {
   position: fixed;
   top: 0; left: 0; right: 0;
   height: var(--nav-h);
-  background: var(--white);
-  border-bottom: 1px solid var(--border);
+  /* === Ubah warna navbar di sini === */
+  background: var(--primary);      /* Merah SMK Telkom */
+  border-bottom: 3px solid var(--primary-dark);
   display: flex;
   align-items: center;
   padding: 0 32px;
   gap: 0;
   z-index: 100;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 2px 12px rgba(192,0,12,.25);
 }
 
 .nav-brand {
@@ -53,16 +75,27 @@ body {
   margin-right: 40px;
 }
 
+/* === UKURAN LOGO DI NAVBAR (Ubah width/height) === */
+.nav-brand img {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.15);
+  padding: 3px;
+}
+
 .nav-brand svg {
   width: 36px;
   height: 36px;
   flex-shrink: 0;
 }
 
+/* Nama sekolah di navbar */
 .nav-brand span {
   font-family: 'DM Serif Display', serif;
-  font-size: 18px;
-  color: var(--navy);
+  font-size: 17px;
+  color: var(--white);   /* Putih karena navbar merah */
   white-space: nowrap;
 }
 
@@ -73,6 +106,7 @@ body {
   flex: 1;
 }
 
+/* Link navigasi di navbar */
 .nav-link {
   display: flex;
   align-items: center;
@@ -81,7 +115,7 @@ body {
   border-radius: 8px;
   font-size: 14px;
   font-weight: 500;
-  color: var(--text-muted);
+  color: rgba(255,255,255,0.80);  /* Putih transparan di navbar merah */
   text-decoration: none;
   transition: background .2s, color .2s;
   white-space: nowrap;
@@ -89,9 +123,10 @@ body {
 
 .nav-link svg { width: 16px; height: 16px; }
 
+/* Link aktif atau saat hover: background putih transparan */
 .nav-link:hover, .nav-link.active {
-  background: #eef3fa;
-  color: var(--navy);
+  background: rgba(255,255,255,.18);
+  color: var(--white);
 }
 
 .nav-user {
@@ -101,6 +136,7 @@ body {
   margin-left: auto;
 }
 
+/* Area profil user di pojok kanan navbar */
 .nav-profile {
   display: flex;
   align-items: center;
@@ -112,7 +148,7 @@ body {
   cursor: pointer;
 }
 
-.nav-profile:hover { background: #eef3fa; }
+.nav-profile:hover { background: rgba(255,255,255,.18); }
 
 .avatar-img {
   width: 34px;
@@ -144,7 +180,7 @@ body {
 .nav-username {
   font-size: 13px;
   font-weight: 500;
-  color: var(--navy);
+  color: var(--white);   /* Nama user putih di navbar merah */
   line-height: 1.3;
   max-width: 140px;
   overflow: hidden;
@@ -154,7 +190,7 @@ body {
 
 .nav-role {
   font-size: 11px;
-  color: var(--text-muted);
+  color: rgba(255,255,255,0.65);
   text-transform: capitalize;
 }
 
@@ -165,12 +201,12 @@ body {
   width: 36px;
   height: 36px;
   border-radius: 8px;
-  color: var(--text-muted);
+  color: rgba(255,255,255,0.7);  /* Ikon putih di navbar merah */
   text-decoration: none;
   transition: background .2s, color .2s;
 }
 
-.nav-logout:hover { background: var(--error-bg); color: var(--error); }
+.nav-logout:hover { background: rgba(255,255,255,.2); color: var(--white); }
 .nav-logout svg { width: 18px; height: 18px; }
 
 /* ========== PAGE WRAPPER ========== */
@@ -195,7 +231,7 @@ body {
 .page-title {
   font-family: 'DM Serif Display', serif;
   font-size: 30px;
-  color: var(--navy);
+  color: var(--primary);   /* Judul halaman berwarna merah */
   line-height: 1.2;
 }
 
@@ -274,7 +310,7 @@ body {
 .stat-purple .stat-icon{ background: #ede9fe; color: #7c3aed; }
 
 .stat-info { display: flex; flex-direction: column; }
-.stat-value { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--navy); line-height: 1.1; }
+.stat-value { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--primary); line-height: 1.1; }
 .stat-label { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
 
 /* ========== SECTION CARD ========== */
@@ -300,7 +336,7 @@ body {
   gap: 8px;
   font-family: 'DM Serif Display', serif;
   font-size: 18px;
-  color: var(--navy);
+  color: var(--primary);   /* Judul section berwarna merah */
 }
 
 .section-head h2 svg { width: 18px; height: 18px; color: var(--text-muted); }
@@ -450,12 +486,13 @@ body {
 
 .bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--navy-mid), var(--navy-light));
+  /* Gradient merah SMK Telkom untuk bar chart */
+  background: linear-gradient(90deg, var(--primary), var(--primary-mid));
   border-radius: 4px;
   transition: width .6s ease;
 }
 
-.bar-val { font-size: 13px; font-weight: 600; color: var(--navy); min-width: 24px; text-align: right; }
+.bar-val { font-size: 13px; font-weight: 600; color: var(--primary); min-width: 24px; text-align: right; }
 
 /* ========== ANGKATAN GRID ========== */
 .angkatan-grid {
@@ -473,7 +510,7 @@ body {
   gap: 4px;
 }
 
-.angkatan-year { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--navy); }
+.angkatan-year { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--primary); }
 .angkatan-count { font-size: 12px; color: var(--text-muted); }
 
 /* ========== SEARCH FORM ========== */
@@ -555,8 +592,8 @@ body {
 .input-wrapper input:focus,
 .input-wrapper select:focus,
 .input-wrapper textarea:focus {
-  border-color: var(--navy-mid);
-  box-shadow: 0 0 0 3px rgba(26,58,92,.08);
+  border-color: var(--primary);             /* Border merah saat diklik */
+  box-shadow: 0 0 0 3px rgba(192,0,12,.08); /* Shadow merah tipis */
 }
 
 .input-wrapper input:disabled { background: #f5f7fa; color: var(--text-muted); }
@@ -567,11 +604,11 @@ body {
   gap: 8px;
   font-size: 13px;
   font-weight: 600;
-  color: var(--navy-mid);
+  color: var(--primary);   /* Judul section merah */
   text-transform: uppercase;
   letter-spacing: .06em;
   padding-bottom: 10px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 2px solid var(--primary-light);
   margin-top: 4px;
 }
 
@@ -584,20 +621,20 @@ body {
   justify-content: center;
   gap: 8px;
   padding: 11px 22px;
-  background: var(--navy);
+  background: var(--primary);    /* Merah SMK Telkom */
   color: var(--white);
   border: none;
   border-radius: var(--radius);
   font-family: 'DM Sans', sans-serif;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   text-decoration: none;
   transition: background .2s, transform .15s;
   white-space: nowrap;
 }
 
-.btn-primary:hover { background: var(--navy-light); transform: translateY(-1px); }
+.btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
 .btn-primary svg { width: 16px; height: 16px; }
 
 .btn-outline {
@@ -618,7 +655,7 @@ body {
   white-space: nowrap;
 }
 
-.btn-outline:hover { border-color: var(--navy); background: rgba(15,39,68,.04); }
+.btn-outline:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
 .btn-outline svg { width: 16px; height: 16px; }
 
 /* ========== EMPTY STATE ========== */
@@ -651,7 +688,7 @@ body {
 
 .alumni-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
 
-.my-card { border-color: var(--gold); background: linear-gradient(135deg, #fffdf4, var(--white)); }
+.my-card { border-color: var(--primary); background: linear-gradient(135deg, #fff5f5, var(--white)); }
 
 .alumni-card-top {
   display: flex;
@@ -674,7 +711,8 @@ body {
 .avatar-letter {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, var(--navy-mid), var(--navy-light));
+  /* Gradient merah untuk inisial avatar */
+  background: linear-gradient(135deg, var(--primary), var(--primary-mid));
   color: white;
   display: flex;
   align-items: center;
@@ -684,7 +722,7 @@ body {
 }
 
 .my-badge {
-  background: var(--gold);
+  background: var(--primary);   /* Badge "Saya" merah */
   color: white;
   font-size: 11px;
   font-weight: 600;
@@ -695,7 +733,7 @@ body {
 .alumni-card-body h4 {
   font-weight: 600;
   font-size: 15px;
-  color: var(--navy);
+  color: var(--primary);   /* Nama alumni berwarna merah */
   margin-bottom: 3px;
 }
 
@@ -727,7 +765,8 @@ body {
 
 /* ========== MY PROFILE BANNER ========== */
 .my-profile-banner {
-  background: linear-gradient(135deg, var(--navy), var(--navy-light));
+  /* Banner profil gradien merah SMK Telkom */
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary));
   border-radius: 16px;
   padding: 24px 32px;
   margin-bottom: 24px;

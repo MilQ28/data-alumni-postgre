@@ -1,23 +1,60 @@
-/* ===== RESET & BASE ===== */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* ============================================================
+   index.css — Halaman Login & Register
+   Portal Alumni SMK Telkom Lampung
+   ============================================================
 
+   PANDUAN UNTUK PEMULA:
+   - Ubah warna utama di bagian :root {} di bawah ini
+   - Ubah foto background di --bg-image
+   - Ubah kegelapan overlay di --overlay
+   - Setiap bagian sudah diberi komentar penjelasan
+   ============================================================ */
+
+/* ============================================================
+   BAGIAN 1: VARIABEL WARNA & TEMA
+   Ubah nilai di sini untuk mengganti seluruh tampilan
+   ============================================================ */
 :root {
-  --navy:      #0f2744;
-  --navy-mid:  #1a3a5c;
-  --navy-light:#274d74;
-  --gold:      #c9a84c;
-  --gold-light:#e8c97a;
-  --cream:     #faf8f4;
-  --white:     #ffffff;
-  --text:      #1a2a3a;
-  --text-muted:#6b7f94;
-  --border:    #dde4ec;
-  --error:     #e53935;
-  --error-bg:  #fff0f0;
-  --success:   #2e7d32;
-  --success-bg:#f0fff4;
-  --radius:    12px;
-  --shadow:    0 8px 40px rgba(15,39,68,.12);
+  /* === WARNA UTAMA (Ubah di sini) === */
+  --primary:      #C0000C;   /* Merah utama SMK Telkom */
+  --primary-dark: #8B0000;   /* Merah lebih gelap, untuk hover tombol */
+  --primary-light:#f8d7d8;   /* Merah sangat muda, untuk background ringan */
+
+  /* === WARNA TEKS & NETRAL === */
+  --text:         #1E1E1E;   /* Teks utama (hitam gelap) */
+  --text-muted:   #6b7f94;   /* Teks abu, untuk placeholder */
+  --white:        #ffffff;
+  --cream:        #fafafa;   /* Background halaman */
+  --border:       #dde4ec;   /* Warna garis border input */
+
+  /* === WARNA PESAN ERROR & SUKSES === */
+  --error:        #e53935;
+  --error-bg:     #fff0f0;
+  --success:      #2e7d32;
+  --success-bg:   #f0fff4;
+
+  /* === BACKGROUND FOTO SEKOLAH === */
+  /* Ubah path file di sini jika ingin ganti foto */
+  --bg-image:     url('../assets/bg-sekolah.jpg');
+
+  /* === OVERLAY GELAP DI ATAS FOTO ===
+     Angka terakhir = tingkat kegelapan: 0.0 = terang, 1.0 = hitam penuh
+     Disarankan: 0.50 sampai 0.65 agar teks tetap terbaca */
+  --overlay:      rgba(0, 0, 0, 0.58);
+
+  /* === UKURAN & RADIUS === */
+  --radius:       12px;
+  --shadow:       0 8px 40px rgba(0,0,0,.18);
+}
+
+/* ============================================================
+   BAGIAN 2: RESET DASAR
+   Ini mengatur ulang style bawaan browser agar tampilan konsisten
+   ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
@@ -28,60 +65,107 @@ body {
   min-height: 100vh;
 }
 
-/* ===== AUTH LAYOUT ===== */
+/* ============================================================
+   BAGIAN 3: LAYOUT UTAMA HALAMAN LOGIN & REGISTER
+   Halaman dibagi 2: kiri (info sekolah) + kanan (form)
+   ============================================================ */
 .auth-bg {
   display: flex;
   min-height: 100vh;
+  /* Foto sekolah sebagai background fullscreen */
+  background-image: var(--bg-image);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
 }
 
+/* Overlay gelap di atas foto agar teks terbaca */
+.auth-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0; /* sama dengan top:0 right:0 bottom:0 left:0 */
+  background: var(--overlay);
+  z-index: 0;
+}
+
+/* Sama untuk halaman register */
+.register-bg {
+  background-image: var(--bg-image);
+}
+
+/* Panel kiri: info sekolah, logo, tagline */
 .auth-left {
   width: 42%;
-  background: linear-gradient(145deg, var(--navy) 0%, var(--navy-mid) 50%, var(--navy-light) 100%);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 56px 52px;
   position: relative;
-  overflow: hidden;
+  z-index: 1; /* di atas overlay */
 }
 
+/* Panel kanan: berisi card form login/register */
 .auth-right {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 40px 32px;
-  background: var(--cream);
+  position: relative;
+  z-index: 1;
 }
 
-/* ===== BRAND ===== */
+/* ============================================================
+   BAGIAN 4: LOGO & BRAND SEKOLAH (Panel Kiri)
+   ============================================================ */
 .brand-block {
   position: relative;
   z-index: 2;
 }
 
+/* === UKURAN LOGO (Ubah width/height untuk mengatur ukuran) === */
 .brand-logo {
-  width: 56px;
-  height: 56px;
-  margin-bottom: 24px;
+  width: 80px;   /* Ubah angka ini untuk memperbesar/memperkecil logo */
+  height: 80px;
+  margin-bottom: 20px;
+  /* Logo berbentuk bulat dengan background putih transparan */
+  background: rgba(255,255,255,0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
 }
 
+/* Pastikan gambar logo memenuhi kotak */
+.brand-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Nama sekolah */
 .brand-name {
   font-family: 'DM Serif Display', serif;
-  font-size: 32px;
+  font-size: 28px;
   color: var(--white);
   line-height: 1.2;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
+/* Tagline di bawah nama sekolah */
 .brand-tagline {
-  color: rgba(255,255,255,.65);
+  color: rgba(255,255,255,0.75);
   font-size: 14px;
   font-weight: 300;
   line-height: 1.5;
 }
 
-/* ===== DECORATIONS ===== */
+/* ============================================================
+   BAGIAN 5: DEKORASI LINGKARAN (Panel Kiri)
+   Efek lingkaran transparan sebagai dekorasi
+   ============================================================ */
 .auth-decoration {
   position: absolute;
   inset: 0;
@@ -91,17 +175,19 @@ body {
 .deco-circle {
   position: absolute;
   border-radius: 50%;
-  border: 1px solid rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.10);
 }
 .c1 { width: 360px; height: 360px; bottom: -100px; right: -80px; }
-.c2 { width: 220px; height: 220px; bottom: 60px; right: 60px; border-color: rgba(201,168,76,.15); }
-.c3 { width: 120px; height: 120px; top: 30%; left: -40px; border-color: rgba(255,255,255,.06); }
+.c2 { width: 220px; height: 220px; bottom: 60px;  right: 60px;  border-color: rgba(192,0,12,.2); }
+.c3 { width: 120px; height: 120px; top: 30%;      left: -40px;  border-color: rgba(255,255,255,.06); }
 
-/* ===== REGISTER STEPS ===== */
+/* ============================================================
+   BAGIAN 6: INDIKATOR LANGKAH (Khusus Register)
+   Menampilkan progress: 1-Data Akun, 2-Data Alumni, 3-Verifikasi
+   ============================================================ */
 .reg-steps {
   display: flex;
   align-items: center;
-  gap: 0;
   position: relative;
   z-index: 2;
   margin-top: 16px;
@@ -128,10 +214,11 @@ body {
   transition: all .3s;
 }
 
+/* Langkah yang aktif ditandai dengan warna merah */
 .step.active .step-num {
-  border-color: var(--gold);
-  color: var(--gold);
-  background: rgba(201,168,76,.12);
+  border-color: var(--primary-light);
+  color: var(--white);
+  background: rgba(192,0,12,.4);
 }
 
 .step-text {
@@ -152,7 +239,9 @@ body {
   margin-bottom: 22px;
 }
 
-/* ===== AUTH QUOTE ===== */
+/* ============================================================
+   BAGIAN 7: QUOTE / KUTIPAN (Pojok Kiri Bawah)
+   ============================================================ */
 .auth-quote {
   position: relative;
   z-index: 2;
@@ -161,33 +250,45 @@ body {
 .auth-quote p {
   font-family: 'DM Serif Display', serif;
   font-style: italic;
-  color: rgba(255,255,255,.5);
+  color: rgba(255,255,255,.55);
   font-size: 15px;
   line-height: 1.6;
 }
 
-/* ===== AUTH CARD ===== */
+/* ============================================================
+   BAGIAN 8: CARD FORM LOGIN / REGISTER
+   Efek glassmorphism: kaca buram + shadow halus
+   ============================================================ */
 .auth-card {
-  background: var(--white);
+  /* === EFEK GLASSMORPHISM (Ubah di sini) ===
+     backdrop-filter: blur(Xpx) → makin besar = makin buram
+     background rgba(255,255,255,0.X) → makin besar = makin putih */
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.4);
   border-radius: 20px;
   padding: 48px 44px;
   width: 100%;
   max-width: 440px;
-  box-shadow: var(--shadow);
+  box-shadow: 0 8px 40px rgba(0,0,0,.25);
 }
 
+/* Card yang lebih lebar (untuk register yang banyak field) */
 .auth-card-wide {
   max-width: 780px;
 }
 
+/* Judul form (misal: "Selamat Datang") */
 .auth-card-header {
-  margin-bottom: 32px;
+  margin-bottom: 28px;
+  text-align: center;
 }
 
 .auth-card-header h2 {
   font-family: 'DM Serif Display', serif;
-  font-size: 28px;
-  color: var(--navy);
+  font-size: 26px;
+  color: var(--text);
   margin-bottom: 6px;
 }
 
@@ -196,7 +297,9 @@ body {
   font-size: 14px;
 }
 
-/* ===== ALERTS ===== */
+/* ============================================================
+   BAGIAN 9: PESAN ERROR & SUKSES
+   ============================================================ */
 .alert {
   display: flex;
   align-items: center;
@@ -221,31 +324,46 @@ body {
   border: 1px solid rgba(46,125,50,.2);
 }
 
-/* ===== FORM ===== */
-.auth-form { display: flex; flex-direction: column; gap: 18px; }
+/* ============================================================
+   BAGIAN 10: FORM INPUT
+   ============================================================ */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
 
-.form-group { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
 
 .form-group label {
   font-size: 13px;
-  font-weight: 500;
-  color: var(--navy);
+  font-weight: 600;
+  color: var(--text);
 }
 
+/* Tanda bintang merah di field wajib */
 .req { color: var(--error); }
 
+/* Layout 2 kolom untuk form register */
 .form-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 16px;
 }
 
+/* Wrapper input dengan icon di dalam */
 .input-wrapper {
   position: relative;
   display: flex;
   align-items: center;
 }
 
+/* Icon di dalam input */
 .input-icon {
   position: absolute;
   left: 14px;
@@ -256,6 +374,7 @@ body {
   z-index: 1;
 }
 
+/* Style untuk semua input, select, dan textarea */
 .input-wrapper input,
 .input-wrapper select,
 .input-wrapper textarea {
@@ -269,7 +388,7 @@ body {
   background: var(--white);
   transition: border-color .2s, box-shadow .2s;
   outline: none;
-  appearance: none;
+  appearance: none; /* Hapus style bawaan browser pada select */
 }
 
 .input-wrapper textarea {
@@ -277,11 +396,13 @@ body {
   min-height: 90px;
 }
 
+/* === EFEK SAAT INPUT DIKLIK/DIFOKUS ===
+   Border berubah merah & ada shadow merah tipis */
 .input-wrapper input:focus,
 .input-wrapper select:focus,
 .input-wrapper textarea:focus {
-  border-color: var(--navy-mid);
-  box-shadow: 0 0 0 3px rgba(26,58,92,.08);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(192,0,12,.10);
 }
 
 .input-wrapper input:disabled {
@@ -289,6 +410,7 @@ body {
   color: var(--text-muted);
 }
 
+/* Tombol show/hide password */
 .toggle-pw {
   position: absolute;
   right: 14px;
@@ -299,45 +421,50 @@ body {
   padding: 0;
   line-height: 1;
 }
-
 .toggle-pw svg { width: 18px; height: 18px; }
 
-/* ===== BUTTONS ===== */
+/* ============================================================
+   BAGIAN 11: TOMBOL (BUTTON)
+   ============================================================ */
+/* Tombol merah utama */
 .btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   padding: 12px 24px;
-  background: var(--navy);
+  background: var(--primary);     /* Merah SMK Telkom */
   color: var(--white);
   border: none;
   border-radius: var(--radius);
   font-family: 'DM Sans', sans-serif;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   text-decoration: none;
   transition: background .2s, transform .15s;
 }
 
+/* Efek saat kursor di atas tombol */
 .btn-primary:hover {
-  background: var(--navy-light);
+  background: var(--primary-dark); /* Merah lebih gelap */
   transform: translateY(-1px);
 }
 
 .btn-primary svg { width: 16px; height: 16px; }
 
+/* Tombol full-width */
 .btn-full { width: 100%; }
 
+/* Tombol outline (border merah, background putih) */
 .btn-outline {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   padding: 10px 20px;
   background: transparent;
-  color: var(--navy);
-  border: 1.5px solid var(--border);
+  color: var(--primary);
+  border: 1.5px solid var(--primary);
   border-radius: var(--radius);
   font-family: 'DM Sans', sans-serif;
   font-size: 14px;
@@ -348,30 +475,34 @@ body {
 }
 
 .btn-outline:hover {
-  border-color: var(--navy);
-  background: rgba(15,39,68,.04);
+  background: var(--primary-light);
 }
 
 .btn-outline svg { width: 16px; height: 16px; }
 
-/* ===== FORM SECTION TITLE ===== */
+/* ============================================================
+   BAGIAN 12: JUDUL SECTION FORM (Register)
+   Garis pemisah antar bagian form
+   ============================================================ */
 .form-section-title {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--navy-mid);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary);
   text-transform: uppercase;
-  letter-spacing: .06em;
+  letter-spacing: .08em;
   padding-bottom: 10px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 2px solid var(--primary-light);
   margin-top: 8px;
 }
 
 .form-section-title svg { width: 16px; height: 16px; }
 
-/* ===== INFO BOX ===== */
+/* ============================================================
+   BAGIAN 13: KOTAK INFO BIRU (Keterangan Verifikasi)
+   ============================================================ */
 .info-box {
   display: flex;
   gap: 10px;
@@ -380,29 +511,33 @@ body {
   border-radius: var(--radius);
   padding: 14px 16px;
   font-size: 13px;
-  color: var(--navy-mid);
+  color: #1a3a5c;
   line-height: 1.5;
 }
 
 .info-box svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; }
 
-/* ===== AUTH FOOTER ===== */
+/* ============================================================
+   BAGIAN 14: FOOTER FORM (Link Daftar / Login)
+   ============================================================ */
 .auth-footer {
-  margin-top: 24px;
+  margin-top: 20px;
   text-align: center;
   font-size: 14px;
   color: var(--text-muted);
 }
 
 .auth-footer a {
-  color: var(--navy-mid);
-  font-weight: 500;
+  color: var(--primary);
+  font-weight: 600;
   text-decoration: none;
 }
 
 .auth-footer a:hover { text-decoration: underline; }
 
-/* ===== SUCCESS SCREEN ===== */
+/* ============================================================
+   BAGIAN 15: LAYAR SUKSES (Setelah Register Berhasil)
+   ============================================================ */
 .success-screen {
   text-align: center;
   padding: 16px 0;
@@ -425,7 +560,7 @@ body {
 .success-screen h2 {
   font-family: 'DM Serif Display', serif;
   font-size: 26px;
-  color: var(--navy);
+  color: var(--text);
   margin-bottom: 14px;
 }
 
@@ -446,26 +581,17 @@ body {
   margin: 16px 0 24px !important;
 }
 
-/* ===== RESPONSIVE ===== */
-@media (max-width: 900px) {
-  .auth-left { display: none; }
-  .auth-card { padding: 36px 28px; }
-  .auth-card-wide { max-width: 100%; }
-}
-
-@media (max-width: 600px) {
-  .auth-right { padding: 24px 16px; }
-  .auth-card { padding: 28px 20px; border-radius: 16px; }
-  .form-row { grid-template-columns: 1fr; }
-}
-
-/* ===== REGISTER TYPE SELECTOR ===== */
+/* ============================================================
+   BAGIAN 16: CARD PILIHAN JENIS PENDAFTARAN
+   (Alumni Baru vs Sudah Terdaftar)
+   ============================================================ */
 .type-selector-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
   margin-bottom: 24px;
 }
+
 .type-card {
   position: relative;
   display: flex;
@@ -481,26 +607,32 @@ body {
   text-align: center;
   overflow: hidden;
 }
+
 .type-card input[type="radio"] {
   position: absolute;
   opacity: 0;
   width: 0;
   height: 0;
 }
+
 .type-card:hover {
-  border-color: var(--navy-light);
-  background: #f8fbff;
+  border-color: var(--primary);
+  background: var(--primary-light);
 }
+
+/* Saat card dipilih: border merah & background merah muda */
 .type-card:has(input[type="radio"]:checked) {
-  border-color: var(--navy);
-  background: #f0f6ff;
-  box-shadow: 0 4px 12px rgba(15, 39, 68, 0.08);
+  border-color: var(--primary);
+  background: var(--primary-light);
+  box-shadow: 0 4px 12px rgba(192,0,12,.12);
 }
+
 .type-content {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
+
 .type-content svg {
   width: 28px;
   height: 28px;
@@ -508,9 +640,11 @@ body {
   color: var(--text-muted);
   transition: color 0.2s;
 }
+
 .type-card:has(input[type="radio"]:checked) .type-content svg {
-  color: var(--navy);
+  color: var(--primary);
 }
+
 .type-title {
   display: block;
   font-weight: 600;
@@ -519,23 +653,47 @@ body {
   margin-bottom: 4px;
   transition: color 0.2s;
 }
+
 .type-card:has(input[type="radio"]:checked) .type-title {
-  color: var(--navy);
+  color: var(--primary);
 }
+
 .type-desc {
   font-size: 12px;
   color: var(--text-muted);
   line-height: 1.4;
 }
+
+/* Animasi fade-in saat section form muncul */
 .form-section-animated {
   animation: fadeIn 0.4s ease forwards;
 }
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-8px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-/* Compatibility for older browsers */
+
+/* Fallback untuk browser lama yang tidak support :has() */
 .type-card input[type="radio"]:checked ~ .type-content svg,
 .type-card input[type="radio"]:checked ~ .type-content .type-title {
-  color: var(--navy);
+  color: var(--primary);
+}
+
+/* ============================================================
+   BAGIAN 17: RESPONSIF (Tampilan di HP/Tablet)
+   ============================================================ */
+/* Di layar kecil (<= 900px), panel kiri disembunyikan */
+@media (max-width: 900px) {
+  .auth-left { display: none; }
+  .auth-card { padding: 36px 28px; }
+  .auth-card-wide { max-width: 100%; }
+}
+
+/* Di layar sangat kecil (<= 600px) */
+@media (max-width: 600px) {
+  .auth-right { padding: 24px 16px; }
+  .auth-card { padding: 28px 20px; border-radius: 16px; }
+  .form-row { grid-template-columns: 1fr; } /* 1 kolom saja di HP */
+  .type-selector-grid { grid-template-columns: 1fr; }
 }

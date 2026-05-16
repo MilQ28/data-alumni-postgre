@@ -4,13 +4,9 @@ $current = basename($_SERVER['PHP_SELF']);
 ?>
 <nav class="navbar">
   <div class="nav-brand">
-    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="48" height="48" rx="12" fill="#1a3a5c"/>
-      <path d="M24 10L34 16V28L24 34L14 28V16L24 10Z" stroke="white" stroke-width="2" fill="none"/>
-      <circle cx="24" cy="22" r="5" fill="white" fill-opacity="0.9"/>
-      <path d="M15 30C17 27 20 25 24 25C28 25 31 27 33 30" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-    </svg>
-    <span>Alumni SMK</span>
+    <!-- Logo SMK Telkom Lampung -->
+    <img src="assets/logo.png" alt="Logo SMK Telkom Lampung">
+    <span>SMK Telkom Lampung</span>
   </div>
 
   <div class="nav-links">

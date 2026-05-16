@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Daftar Alumni — Alumni SMK</title>
+<title>Daftar Akun — Portal Alumni SMK Telkom Lampung</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style/index.css">
 </head>
@@ -137,16 +137,12 @@ $alumniTanpaAkun = mysqli_fetch_all($resAlumni, MYSQLI_ASSOC);
 <div class="auth-bg register-bg">
   <div class="auth-left">
     <div class="brand-block">
+      <!-- Logo sekolah. Ubah src jika ingin ganti gambar logo -->
       <div class="brand-logo">
-        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="48" height="48" rx="14" fill="white" fill-opacity="0.15"/>
-          <path d="M24 10L34 16V28L24 34L14 28V16L24 10Z" stroke="white" stroke-width="2" fill="none"/>
-          <circle cx="24" cy="22" r="5" fill="white" fill-opacity="0.9"/>
-          <path d="M15 30C17 27 20 25 24 25C28 25 31 27 33 30" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
+        <img src="assets/logo.png" alt="Logo SMK Telkom Lampung">
       </div>
-      <h1 class="brand-name">Alumni SMK</h1>
-      <p class="brand-tagline">Bergabunglah dengan komunitas alumni kami</p>
+      <h1 class="brand-name">SMK Telkom Lampung</h1>
+      <p class="brand-tagline">Daftarkan akun alumni Anda di portal resmi sekolah</p>
     </div>
     <div class="auth-decoration">
       <div class="deco-circle c1"></div>
@@ -160,7 +156,7 @@ $alumniTanpaAkun = mysqli_fetch_all($resAlumni, MYSQLI_ASSOC);
       <div class="step-line"></div>
       <div class="step"><div class="step-num">3</div><div class="step-text">Verifikasi Admin</div></div>
     </div>
-    <div class="auth-quote"><p>"Daftar sekarang dan terhubung dengan sesama alumni."</p></div>
+    <div class="auth-quote"><p>"Bersama alumni, membangun nama SMK Telkom Lampung di tingkat nasional."</p></div>
   </div>
 
   <div class="auth-right">

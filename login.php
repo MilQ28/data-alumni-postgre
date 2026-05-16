@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login — Alumni SMK</title>
+<title>Login — Portal Alumni SMK Telkom Lampung</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style/index.css">
 </head>
@@ -58,16 +58,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="auth-bg">
   <div class="auth-left">
     <div class="brand-block">
+      <!-- Logo sekolah. Ubah src jika ingin ganti gambar logo -->
       <div class="brand-logo">
-        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="48" height="48" rx="14" fill="white" fill-opacity="0.15"/>
-          <path d="M24 10L34 16V28L24 34L14 28V16L24 10Z" stroke="white" stroke-width="2" fill="none"/>
-          <circle cx="24" cy="22" r="5" fill="white" fill-opacity="0.9"/>
-          <path d="M15 30C17 27 20 25 24 25C28 25 31 27 33 30" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
+        <img src="assets/logo.png" alt="Logo SMK Telkom Lampung">
       </div>
-      <h1 class="brand-name">Alumni SMK</h1>
-      <p class="brand-tagline">Portal Data Alumni Sekolah Menengah Kejuruan</p>
+      <h1 class="brand-name">SMK Telkom Lampung</h1>
+      <p class="brand-tagline">Portal Resmi Data Alumni · Sekolah Menengah Kejuruan Telkom Lampung</p>
     </div>
     <div class="auth-decoration">
       <div class="deco-circle c1"></div>
@@ -75,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="deco-circle c3"></div>
     </div>
     <div class="auth-quote">
-      <p>"Dari SMK, membangun masa depan yang gemilang."</p>
+      <p>"Membangun generasi unggul di bidang telekomunikasi dan teknologi."</p>
     </div>
   </div>
 
