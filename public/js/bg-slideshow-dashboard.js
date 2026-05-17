@@ -19,11 +19,14 @@
   // KONFIGURASI (Ubah di sini)
   // ============================================================
 
+  const scriptUrl = document.currentScript.src;
+  const baseUrl = scriptUrl.substring(0, scriptUrl.lastIndexOf('/js/'));
+
   var images = [
-    "/assets/bg-sekolah.jpg",
-    "/assets/bg-sekolah-2.jpg",
-    "/assets/bg-sekolah-3.jpg",
-    "/assets/bg-sekolah-4.jpg",
+    baseUrl + "/assets/bg-sekolah.jpg",
+    baseUrl + "/assets/bg-sekolah-2.jpg",
+    baseUrl + "/assets/bg-sekolah-3.jpg",
+    baseUrl + "/assets/bg-sekolah-4.jpg",
   ];
 
   // Kecepatan ganti foto (milidetik): 7000 = 7 detik
@@ -34,7 +37,7 @@
 
   // Seberapa samar overlay di atas foto (0.0 = tidak ada, 1.0 = hitam penuh)
   // Untuk dashboard disarankan 0.80 - 0.88 agar konten tetap nyaman dibaca
-  var overlayOpacity = 0.83;
+  var overlayOpacity = 0.4;
 
   // ============================================================
   // LOGIKA SLIDESHOW (Tidak perlu diubah)

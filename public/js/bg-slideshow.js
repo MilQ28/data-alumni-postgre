@@ -19,12 +19,15 @@
   // Ubah nilai di sini sesuai kebutuhan
   // ============================================================
 
+  const scriptUrl = document.currentScript.src;
+  const baseUrl = scriptUrl.substring(0, scriptUrl.lastIndexOf('/js/'));
+
   // Daftar foto background. Tambah path foto baru di sini.
   var images = [
-    "/assets/bg-sekolah.jpg",   // Foto 1: Gedung sekolah
-    "/assets/bg-sekolah-2.jpg", // Foto 2: Lab komputer
-    "/assets/bg-sekolah-3.jpg", // Foto 3: Wisuda
-    "/assets/bg-sekolah-4.jpg", // Foto 4: Aerial kampus
+    baseUrl + "/assets/bg-sekolah.jpg",   // Foto 1: Gedung sekolah
+    baseUrl + "/assets/bg-sekolah-2.jpg", // Foto 2: Lab komputer
+    baseUrl + "/assets/bg-sekolah-3.jpg", // Foto 3: Wisuda
+    baseUrl + "/assets/bg-sekolah-4.jpg", // Foto 4: Aerial kampus
   ];
 
   // Berapa lama setiap foto ditampilkan (dalam milidetik)
