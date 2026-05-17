@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="brand-block">
       <!-- Logo sekolah. Ubah src jika ingin ganti gambar logo -->
       <div class="brand-logo">
-        <img src="assets/logo.png" alt="Logo SMK Telkom Lampung">
+        <img src="assets/logo-asli.png" alt="Logo SMK Telkom Lampung">
       </div>
       <h1 class="brand-name">SMK Telkom Lampung</h1>
       <p class="brand-tagline">Portal Resmi Data Alumni · Sekolah Menengah Kejuruan Telkom Lampung</p>
