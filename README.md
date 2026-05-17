@@ -147,7 +147,7 @@ Project ini dilisensikan di bawah **MIT License**. Lihat file `LICENSE` untuk in
 
 **MilQ28**
 - GitHub: [@MilQ28](https://github.com/MilQ28)
-- Email: your.email@example.com
+- Email: syamilcholidatsani@gmail.com
 
 ---
 *Project ini dikembangkan dengan ❤️ untuk kemajuan komunikasi Alumni SMK Telkom.*
