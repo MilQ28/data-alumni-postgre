@@ -954,6 +954,14 @@ body {
 
 @media (max-width: 500px) {
   .stats-grid { grid-template-columns: 1fr; }
-  .page-header { flex-direction: column; align-items: flex-start; }
+  .page-header { flex-direction: column; align-items: flex-start; gap: 12px; }
   .alumni-grid { grid-template-columns: 1fr; }
+  .nav-brand span { display: none; } /* Sembunyikan nama sekolah di HP portrait */
+  .navbar { padding: 0 10px; }
+  .nav-links { justify-content: center; }
+  .nav-link { padding: 8px; }
+  
+  /* Perkecil padding & font tabel agar tidak terlalu lebar di HP */
+  .table-wrap table th, .table-wrap table td { padding: 8px 6px; font-size: 12px; }
+  .btn-sm { padding: 4px 8px; font-size: 11px; }
 }
