@@ -34,7 +34,7 @@ if (isAdmin() && isset($_GET['id'])) {
 // Jika ini admin murni (tidak punya id_alumni) dan tidak sedang melihat profil orang lain
 if (!$target_id && isAdmin()) {
     $isPureAdmin = true;
-    $res = pg_query_params($conn, "SELECT * FROM users WHERE id_user = $1", array($_SESSION['user_id']));
+    $res = pg_query_params($conn, "SELECT * FROM users WHERE user_id = $1", array($_SESSION['user_id']));
     $user_data = pg_fetch_assoc($res);
     $alumni = [
         'nama' => $user_data['username'], // Admin pakai username
@@ -83,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canEdit) {
                 $error = 'Konfirmasi password tidak cocok.';
             } else {
                 $hashed = password_hash($new_pw, PASSWORD_DEFAULT);
-                pg_query_params($conn, "UPDATE users SET password=$1 WHERE id_user=$2", array($hashed, $_SESSION['user_id']));
+                pg_query_params($conn, "UPDATE users SET password=$1 WHERE user_id=$2", array($hashed, $_SESSION['user_id']));
                 $success = 'Password berhasil diperbarui.';
             }
         }
