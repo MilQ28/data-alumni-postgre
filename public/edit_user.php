@@ -1,4 +1,4 @@
-<?php require 'koneksi.php'; ?>
+<?php require '../src/koneksi.php'; ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -10,10 +10,10 @@
 </head>
 <body>
 <?php
-require 'auth.php';
-require 'koneksi.php';
+require '../src/auth.php';
+require '../src/koneksi.php';
 requireAdmin();
-include 'navbar.php';
+include '../src/navbar.php';
 
 $id = (int)($_GET['id'] ?? 0);
 
@@ -29,7 +29,11 @@ if (!$user) {
 $error = $success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $new_pw = trim($_POST['new_password'] ?? '');
+    // Validasi CSRF
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        $error = 'Token CSRF tidak valid. Silakan muat ulang halaman.';
+    } else {
+        $new_pw = trim($_POST['new_password'] ?? '');
     $status = trim($_POST['status'] ?? '');
     $role   = trim($_POST['role']   ?? '');
 
@@ -55,6 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $res = pg_query_params($conn, "SELECT u.*, a.nama FROM users u LEFT JOIN alumni a ON u.id_alumni=a.id_alumni WHERE u.user_id=$1", array($id));
         $user = pg_fetch_assoc($res);
     }
+    }
 }
 ?>
 
@@ -69,6 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <div class="section-card">
     <form method="POST" class="auth-form">
+      <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
       <div class="form-row">
         <div class="form-group">
           <label>Username</label>

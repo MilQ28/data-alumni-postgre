@@ -1,4 +1,4 @@
-<?php require 'koneksi.php'; ?>
+<?php require '../src/koneksi.php'; ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -10,10 +10,10 @@
 </head>
 <body>
 <?php
-require 'auth.php';
-require 'koneksi.php';
+require '../src/auth.php';
+require '../src/koneksi.php';
 requireLogin();
-include 'navbar.php';
+include '../src/navbar.php';
 
 $error   = '';
 $success = '';
@@ -71,8 +71,12 @@ $jurusan_list = [
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canEdit) {
-    // Jika admin murni, lewati semua urusan alumni
-    if ($isPureAdmin) {
+    // Validasi CSRF
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        $error = 'Token CSRF tidak valid. Silakan muat ulang halaman.';
+    } else {
+        // Jika admin murni, lewati semua urusan alumni
+        if ($isPureAdmin) {
         // Boleh ganti username dan password
         $username = trim($_POST['username'] ?? '');
         if (!$username) {
@@ -171,6 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canEdit) {
             }
         }
     }
+    }
 }
 ?>
 
@@ -259,6 +264,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canEdit) {
       <div class="section-card">
         <div class="section-head"><h2>Edit Profil</h2></div>
         <form method="POST" enctype="multipart/form-data" class="auth-form">
+          <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
           <input type="file" id="fotoInput" name="foto" accept="image/*" style="display:none" onchange="previewFoto(this)">
 
           <?php if (!$isPureAdmin): ?>

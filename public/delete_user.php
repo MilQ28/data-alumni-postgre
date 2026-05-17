@@ -1,6 +1,6 @@
 <?php
-require 'auth.php';
-require 'koneksi.php';
+require '../src/auth.php';
+require '../src/koneksi.php';
 requireAdmin();
 
 $action = $_GET['action'] ?? '';

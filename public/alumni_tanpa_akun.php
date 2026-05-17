@@ -1,4 +1,4 @@
-<?php require 'koneksi.php'; ?>
+<?php require '../src/koneksi.php'; ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -10,10 +10,10 @@
 </head>
 <body>
 <?php
-require 'auth.php';
-require 'koneksi.php';
+require '../src/auth.php';
+require '../src/koneksi.php';
 requireAdmin();
-include 'navbar.php';
+include '../src/navbar.php';
 
 $search = trim($_GET['search'] ?? '');
 

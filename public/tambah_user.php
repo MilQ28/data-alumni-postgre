@@ -1,4 +1,4 @@
-<?php require 'koneksi.php'; ?>
+<?php require '../src/koneksi.php'; ?>
 <!DOCTYPE html>
 <html lang="id">
 
@@ -12,10 +12,10 @@
 
 <body>
   <?php
-  require 'auth.php';
-  require 'koneksi.php';
+  require '../src/auth.php';
+  require '../src/koneksi.php';
   requireAdmin();
-  include 'navbar.php';
+  include '../src/navbar.php';
 
   $error = $success = '';
   $jurusan_list = [
@@ -37,8 +37,12 @@
   // 2. PROSES TAMBAH AKUN PENGGUNA
   // ==============================================================================
   if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Ambil data form
-    $username  = trim($_POST['username']  ?? '');
+    // Validasi CSRF
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        $error = 'Token CSRF tidak valid. Silakan muat ulang halaman.';
+    } else {
+        // Ambil data form
+        $username  = trim($_POST['username']  ?? '');
     $password  = trim($_POST['password']  ?? '');
     $role      = trim($_POST['role']      ?? 'user');
     $id_alumni = trim($_POST['id_alumni'] ?? '');
@@ -73,6 +77,7 @@
         $success = 'Pengguna berhasil ditambahkan.';
       }
     }
+    }
   }
   ?>
 
@@ -101,6 +106,7 @@
 
     <div class="section-card">
       <form method="POST" class="auth-form">
+        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
         <div class="form-row">
           <div class="form-group">
             <label>Username <span class="req">*</span></label>

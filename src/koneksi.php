@@ -10,11 +10,11 @@ if (!ob_get_level()) {
     ob_start();
 }
 
-$host     = 'aws-1-ap-southeast-1.pooler.supabase.com'; // Pooler Host (IPv4 compatible)
-$port     = '6543';                                       // Pooler Port
-$dbname   = 'postgres';
-$username = 'postgres.fymxdzbuubvhbljowlul';             // Pooler Username
-$password = '3WHyMBpruKUSj0TL';
+$host     = getenv('DB_HOST') ?: 'aws-1-ap-southeast-1.pooler.supabase.com'; // Pooler Host
+$port     = getenv('DB_PORT') ?: '6543';                                       // Pooler Port
+$dbname   = getenv('DB_NAME') ?: 'postgres';
+$username = getenv('DB_USER') ?: 'postgres.fymxdzbuubvhbljowlul';             // Pooler Username
+$password = getenv('DB_PASS') ?: '3WHyMBpruKUSj0TL';
 
 // 1. Melakukan koneksi via Connection Pooler (PgBouncer)
 $conn_string = "host={$host} port={$port} dbname={$dbname} user={$username} password={$password} sslmode=require";

@@ -1,0 +1,15 @@
+# Ignore uploaded files
+public/uploads/foto_profil/*
+!public/uploads/foto_profil/.gitkeep
+
+# Ignore scratch files
+scratch/
+
+# Ignore test/junk files (if not deleted yet)
+echoHash.php
+dataGenerate.py
+dummy_alumni.sql
+
+# Ignore OS files
+.DS_Store
+Thumbs.db

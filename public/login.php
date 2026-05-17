@@ -1,4 +1,4 @@
-<?php require 'koneksi.php'; ?>
+<?php require '../src/koneksi.php'; ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -26,10 +26,14 @@ $error = ''; // Variabel untuk menyimpan pesan error jika login gagal
 
 // 3. PROSES FORM SAAT TOMBOL SUBMIT DITEKAN
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Ambil data username dan password dari form
-    // trim() digunakan untuk menghapus spasi kosong di awal/akhir input
-    $username = trim($_POST['username'] ?? '');
-    $password = trim($_POST['password'] ?? '');
+    // Validasi CSRF
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        $error = 'Token CSRF tidak valid. Silakan muat ulang halaman.';
+    } else {
+        // Ambil data username dan password dari form
+        // trim() digunakan untuk menghapus spasi kosong di awal/akhir input
+        $username = trim($_POST['username'] ?? '');
+        $password = trim($_POST['password'] ?? '');
 
     // Pastikan username dan password tidak kosong
     if ($username && $password) {
@@ -51,6 +55,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error = 'Akun Anda ditolak. Hubungi administrator.';
             } else {
                 // 6. LOGIN BERHASIL
+                // Regenerasi session ID untuk mencegah session fixation
+                session_regenerate_id(true);
+                
                 // Simpan data penting ke dalam Session
                 $_SESSION['user_id']  = $user['user_id'];
                 $_SESSION['username'] = $user['username'];
@@ -68,6 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         // Jika form belum diisi lengkap
         $error = 'Harap isi semua kolom.';
+    }
     }
 }
 ?>
@@ -109,6 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <?php endif; ?>
 
       <form method="POST" class="auth-form">
+        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
         <div class="form-group">
           <label for="username">Username</label>
           <div class="input-wrapper">

@@ -20,7 +20,7 @@ CREATE INDEX IF NOT EXISTS idx_sessions_expires ON sessions (expires_at);
 -- Tabel `alumni`
 -- --------------------------------------------------------
 
-CREATE TABLE alumni (
+CREATE TABLE IF NOT EXISTS alumni (
   id_alumni   SERIAL PRIMARY KEY,
   nis         VARCHAR(20)   NOT NULL,
   nama        VARCHAR(100)  NOT NULL,
@@ -39,14 +39,22 @@ CREATE TABLE alumni (
 -- Tipe Data Custom (ENUM) untuk PostgreSQL
 -- --------------------------------------------------------
 
-CREATE TYPE user_role AS ENUM ('user', 'admin', 'superadmin');
-CREATE TYPE user_status AS ENUM ('pending', 'approved', 'rejected');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_role') THEN
+        CREATE TYPE user_role AS ENUM ('user', 'admin', 'superadmin');
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_status') THEN
+        CREATE TYPE user_status AS ENUM ('pending', 'approved', 'rejected');
+    END IF;
+END
+$$;
 
 -- --------------------------------------------------------
 -- Tabel `users`
 -- --------------------------------------------------------
 
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
   user_id     SERIAL PRIMARY KEY,
   username    VARCHAR(50)   NOT NULL UNIQUE,
   password    VARCHAR(255)  NOT NULL,
@@ -60,16 +68,17 @@ CREATE TABLE users (
 -- Data awal `users` (admin & superadmin)
 -- --------------------------------------------------------
 
-INSERT INTO users (user_id, username, password, role, status) VALUES
-(1, 'admin',      '$2y$10$8TQ6R1e3mgFzSI1uG/u2Yuvkh/KBimqODiJEiNFNbIs9eqvxbQ.kG', 'admin',      'approved'),
-(2, 'superadmin', '$2y$10$4yK.E.rMAoAVzbFVh5TqOukRJod8UOHOQfY.Ts2262Aa2gK9Ao6DG', 'superadmin', 'approved');
+INSERT INTO users (username, password, role, status) VALUES
+('admin',      '$2y$10$8TQ6R1e3mgFzSI1uG/u2Yuvkh/KBimqODiJEiNFNbIs9eqvxbQ.kG', 'admin',      'approved'),
+('superadmin', '$2y$10$4yK.E.rMAoAVzbFVh5TqOukRJod8UOHOQfY.Ts2262Aa2gK9Ao6DG', 'superadmin', 'approved')
+ON CONFLICT (username) DO NOTHING;
 
 -- --------------------------------------------------------
 -- Contoh data alumni
 -- --------------------------------------------------------
 
 INSERT INTO alumni (nis, nama, angkatan, jurusan, email, no_hp, pekerjaan, perusahaan, alamat) VALUES
-('553241167', 'Syamil Cholid Atsani', 2024, 'Rekayasa Perangkat Lunak', 'syamil@email.com', '0812345678910', 'Software Engineer', 'Nvidia + OpenAI', 'Pringsewu, Lampung');
+('553241167', 'Syamil Cholid Atsani', 2024, 'Rekayasa Perangkat Lunak', 'syamil@email.com', '0812345678910', 'Software Engineer', 'Nvidia + OpenAI', 'Pringsewu, Lampung')
+ON CONFLICT (email) DO NOTHING;
 
--- Sesuaikan urutan sequence jika memasukkan data dengan ID manual (Optional)
-SELECT setval('users_user_id_seq', (SELECT MAX(user_id) FROM users));
+

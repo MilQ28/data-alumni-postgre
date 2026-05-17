@@ -1,5 +1,5 @@
 <?php 
-require 'koneksi.php'; 
+require '../src/koneksi.php'; 
 if (isset($_SESSION['user_id'])) {
     header('Location: index.php'); exit;
 }
@@ -28,14 +28,18 @@ $jurusan_list = [
 // PROSES PENDAFTARAN ALUMNI
 // ==============================================================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // 1. Ambil data dasar akun
-    $jenis_daftar = $_POST['jenis_daftar'] ?? 'baru'; // Cek apakah dia alumni baru atau sudah ada datanya
-    $username   = trim($_POST['username']   ?? '');
-    $password   = trim($_POST['password']   ?? '');
-    $confirm_pw = trim($_POST['confirm_pw'] ?? '');
+    // Validasi CSRF
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        $error = 'Token CSRF tidak valid. Silakan muat ulang halaman.';
+    } else {
+        // 1. Ambil data dasar akun
+        $jenis_daftar = $_POST['jenis_daftar'] ?? 'baru'; // Cek apakah dia alumni baru atau sudah ada datanya
+        $username   = trim($_POST['username']   ?? '');
+        $password   = trim($_POST['password']   ?? '');
+        $confirm_pw = trim($_POST['confirm_pw'] ?? '');
 
-    // 2. Validasi Input Dasar
-    if (!$username || !$password) {
+        // 2. Validasi Input Dasar
+        if (!$username || !$password) {
         $error = 'Username dan password wajib diisi.';
     } elseif ($password !== $confirm_pw) {
         $error = 'Password dan konfirmasi password tidak cocok.';
@@ -128,6 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
+    }
 }
 
 // Ambil data alumni yang belum memiliki akun untuk pilihan dropdown
@@ -199,6 +204,7 @@ $alumniTanpaAkun = pg_fetch_all($resAlumni) ?: [];
       <?php endif; ?>
 
       <form method="POST" class="auth-form" id="registerForm">
+        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
 
         <div class="form-section-title" style="border-bottom:none; margin-bottom:4px;">
           Pilih Jenis Pendaftaran

@@ -1,6 +1,6 @@
 <?php 
-require 'koneksi.php'; 
-require 'auth.php';
+require '../src/koneksi.php'; 
+require '../src/auth.php';
 requireAdmin(); 
 ?>
 <!DOCTYPE html>
@@ -14,7 +14,7 @@ requireAdmin();
 </head>
 <body>
 <?php
-include 'navbar.php';
+include '../src/navbar.php';
 
 // ==============================================================================
 // MENGAMBIL DATA STATISTIK UNTUK DASHBOARD
