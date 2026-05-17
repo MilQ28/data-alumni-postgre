@@ -931,37 +931,109 @@ body {
 
 .profile-main { min-width: 0; }
 
-/* ========== RESPONSIVE ========== */
-@media (max-width: 1100px) {
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
-  .two-col-grid { grid-template-columns: 1fr; }
-}
+/* ============================================================
+   BAGIAN: RESPONSIVE (Tampilan Mobile & Tablet)
+   Fokus Utama: Memastikan tampilan rapi di HP tanpa merusak desktop
+   ============================================================ */
 
+/* Untuk Tablet & Layar Sedang (<= 900px) */
 @media (max-width: 900px) {
-  .page-wrapper { padding: 28px 20px 48px; }
+  .page-wrapper { padding: 20px 15px 40px; }
   .profile-layout { grid-template-columns: 1fr; }
-  .nav-user-info { display: none; }
+  .nav-user-info { display: none; } /* Sembunyikan nama user di navbar */
   .navbar { padding: 0 16px; }
   .nav-brand { margin-right: 16px; }
 }
 
-@media (max-width: 700px) {
-  .stats-grid { grid-template-columns: 1fr 1fr; }
-  .nav-links { gap: 0; }
-  .nav-link span { display: none; }
+/* Untuk HP Portrait & Lanskap (<= 768px) - FOKUS UTAMA ANDA */
+@media (max-width: 768px) {
+  /* Mencegah scroll horizontal yang membuat layar berantakan */
+  body, html { 
+    overflow-x: hidden; 
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  /* --- NAVBAR MOBILE --- */
+  .navbar { padding: 0 10px; }
+  .nav-brand span { display: none; } /* Sembunyikan teks nama sekolah, sisakan logo */
+  .nav-links { gap: 4px; justify-content: center; }
+  .nav-link { padding: 8px; }
+  .nav-link span { display: none; } /* Sembunyikan teks menu, sisakan ikon saja agar muat */
+  
+  /* --- KARTU PROFIL (Yang berantakan di screenshot Anda) --- */
+  .my-profile-banner { 
+    padding: 20px; 
+    margin-bottom: 20px;
+  }
+  .profile-banner-inner { 
+    flex-direction: column; /* Susun vertikal (Atas ke bawah) */
+    align-items: center; 
+    text-align: center; 
+    gap: 15px; 
+  }
+  .profile-banner-info { 
+    text-align: center; 
+    width: 100%;
+  }
+  .profile-banner-info h3 {
+    font-size: 18px;
+  }
+  .banner-job { 
+    justify-content: center; /* Ratakan tengah untuk icon + teks pekerjaan */
+    flex-wrap: wrap;
+  }
+  .profile-banner-inner .btn-outline { 
+    width: 100%; /* Tombol Edit Profil memenuhi lebar kartu di HP */
+    justify-content: center; 
+    text-align: center;
+    padding: 10px;
+  }
+  
+  /* --- GRIDS & LAYOUT --- */
+  .stats-grid { grid-template-columns: 1fr; } /* Statistik jadi 1 kolom */
+  .alumni-grid { grid-template-columns: 1fr; } /* Kartu alumni jadi 1 kolom */
   .angkatan-grid { grid-template-columns: repeat(2, 1fr); }
+  .page-header { 
+    flex-direction: column; 
+    align-items: stretch; 
+    gap: 12px; 
+    text-align: center;
+  }
+  .page-header .btn-primary {
+    justify-content: center;
+  }
+  
+  /* --- TABEL DATA (Scrollable tanpa merusak layout) --- */
+  .table-wrap {
+    width: 100%;
+    overflow-x: auto; /* Tetap bisa di-geser jika tabel kepanjangan */
+    -webkit-overflow-scrolling: touch;
+  }
+  .table-wrap table th, .table-wrap table td { 
+    padding: 8px 6px; 
+    font-size: 12px; 
+  }
+  .btn-sm { padding: 4px 8px; font-size: 11px; }
+  
+  /* --- FORM PENCARIAN & FILTER --- */
+  .search-form {
+    flex-direction: column; /* Susun input ke bawah di HP */
+    align-items: stretch;
+  }
+  .search-form .input-wrapper {
+    width: 100%;
+    min-width: 100%;
+  }
+  .search-form button {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
-@media (max-width: 500px) {
-  .stats-grid { grid-template-columns: 1fr; }
-  .page-header { flex-direction: column; align-items: flex-start; gap: 12px; }
-  .alumni-grid { grid-template-columns: 1fr; }
-  .nav-brand span { display: none; } /* Sembunyikan nama sekolah di HP portrait */
-  .navbar { padding: 0 10px; }
-  .nav-links { justify-content: center; }
-  .nav-link { padding: 8px; }
-  
-  /* Perkecil padding & font tabel agar tidak terlalu lebar di HP */
-  .table-wrap table th, .table-wrap table td { padding: 8px 6px; font-size: 12px; }
-  .btn-sm { padding: 4px 8px; font-size: 11px; }
+/* Untuk HP Sangat Kecil (<= 360px) */
+@media (max-width: 360px) {
+  .nav-links { gap: 2px; }
+  .nav-link { padding: 6px; }
+  .angkatan-grid { grid-template-columns: 1fr; }
 }
