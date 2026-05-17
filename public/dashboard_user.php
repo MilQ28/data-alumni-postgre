@@ -143,7 +143,7 @@ while ($row = pg_fetch_assoc($res2)) {
   </div>
 
   <!-- Alumni Grid -->
-  <div class="alumni-grid">
+  <div class="alumni-grid" id="alumni-grid">
     <?php if (empty($alumniList)): ?>
     <div class="empty-state">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -194,6 +194,10 @@ while ($row = pg_fetch_assoc($res2)) {
     <?php endif; ?>
   </div>
 </div>
-<script src="assets/bg-slideshow-dashboard.js"></script>
+<script>
+const myIdAlumni = <?= json_encode($id_alumni) ?>;
+</script>
+<script src="js/bg-slideshow-dashboard.js"></script>
+<script src="js/realtime-dashboard.js"></script>
 </body>
 </html>

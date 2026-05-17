@@ -164,6 +164,38 @@ function togglePassword() {
   pw.type = pw.type === 'password' ? 'text' : 'password';
 }
 </script>
-<script src="assets/bg-slideshow.js"></script>
+<script>
+// Real-time status check for pending accounts
+const errorEl = document.querySelector('.alert-error');
+const usernameEl = document.getElementById('username');
+if (errorEl && errorEl.innerText.includes('menunggu verifikasi') && usernameEl && usernameEl.value) {
+    const username = usernameEl.value;
+    const interval = setInterval(() => {
+        fetch(`api/check_status.php?username=${encodeURIComponent(username)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'approved') {
+                    errorEl.className = 'alert alert-success';
+                    errorEl.innerHTML = `
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                        Akun Anda telah disetujui! Silakan klik tombol Login.`;
+                    clearInterval(interval);
+                } else if (data.status === 'rejected') {
+                    errorEl.className = 'alert alert-error';
+                    errorEl.innerHTML = `
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                        Akun Anda ditolak. Hubungi administrator.`;
+                    clearInterval(interval);
+                }
+            })
+            .catch(err => console.error('Error checking status:', err));
+    }, 5000);
+}
+</script>
+<script src="js/bg-slideshow.js"></script>
 </body>
 </html>

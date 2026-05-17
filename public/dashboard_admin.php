@@ -85,7 +85,7 @@ $alumniBelumTerdaftar = pg_fetch_all($resDataBelum) ?: [];
         </svg>
       </div>
       <div class="stat-info">
-        <span class="stat-value"><?= number_format($totalAlumni) ?></span>
+        <span class="stat-value" id="total-alumni"><?= number_format($totalAlumni) ?></span>
         <span class="stat-label">Total Alumni</span>
       </div>
     </div>
@@ -96,7 +96,7 @@ $alumniBelumTerdaftar = pg_fetch_all($resDataBelum) ?: [];
         </svg>
       </div>
       <div class="stat-info">
-        <span class="stat-value"><?= number_format($totalUsers) ?></span>
+        <span class="stat-value" id="total-users"><?= number_format($totalUsers) ?></span>
         <span class="stat-label">Pengguna Aktif</span>
       </div>
     </div>
@@ -107,7 +107,7 @@ $alumniBelumTerdaftar = pg_fetch_all($resDataBelum) ?: [];
         </svg>
       </div>
       <div class="stat-info">
-        <span class="stat-value"><?= number_format($pending) ?></span>
+        <span class="stat-value" id="total-pending"><?= number_format($pending) ?></span>
         <span class="stat-label">Menunggu Verifikasi</span>
       </div>
     </div>
@@ -133,7 +133,7 @@ $alumniBelumTerdaftar = pg_fetch_all($resDataBelum) ?: [];
           <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
         </svg>
         Menunggu Verifikasi
-        <span class="badge badge-amber"><?= $pending ?></span>
+        <span class="badge badge-amber" id="badge-pending"><?= $pending ?></span>
       </h2>
     </div>
     <div class="table-wrap">
@@ -143,7 +143,7 @@ $alumniBelumTerdaftar = pg_fetch_all($resDataBelum) ?: [];
             <th>NIS</th><th>Nama</th><th>Jurusan</th><th>Angkatan</th><th>Username</th><th>Aksi</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="pending-users-table">
           <?php foreach ($pendingUsers as $pu): ?>
           <tr>
             <td><code><?= htmlspecialchars($pu['nis'] ?? '-') ?></code></td>
@@ -307,6 +307,7 @@ $alumniBelumTerdaftar = pg_fetch_all($resDataBelum) ?: [];
     </div>
   </div>
 </div>
-<script src="assets/bg-slideshow-dashboard.js"></script>
+<script src="js/bg-slideshow-dashboard.js"></script>
+<script src="js/realtime-admin.js"></script>
 </body>
 </html>
