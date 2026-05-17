@@ -13,3 +13,7 @@ dummy_alumni.sql
 # Ignore OS files
 .DS_Store
 Thumbs.db
+
+# Ignore Composer vendor folder
+vendor/
+

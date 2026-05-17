@@ -58,6 +58,7 @@ CREATE TABLE IF NOT EXISTS users (
   user_id     SERIAL PRIMARY KEY,
   username    VARCHAR(50)   NOT NULL UNIQUE,
   password    VARCHAR(255)  NOT NULL,
+  email       VARCHAR(100)  UNIQUE, -- Email untuk admin/superadmin
   role        user_role     NOT NULL DEFAULT 'user',
   id_alumni   INTEGER       DEFAULT NULL REFERENCES alumni(id_alumni) ON DELETE SET NULL,
   status      user_status   NOT NULL DEFAULT 'pending',
@@ -80,5 +81,56 @@ ON CONFLICT (username) DO NOTHING;
 INSERT INTO alumni (nis, nama, angkatan, jurusan, email, no_hp, pekerjaan, perusahaan, alamat) VALUES
 ('553241167', 'Syamil Cholid Atsani', 2024, 'Rekayasa Perangkat Lunak', 'syamil@email.com', '0812345678910', 'Software Engineer', 'Nvidia + OpenAI', 'Pringsewu, Lampung')
 ON CONFLICT (email) DO NOTHING;
+
+-- --------------------------------------------------------
+-- Tabel `activity_logs`
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS activity_logs (
+  log_id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES users(user_id) ON DELETE SET NULL,
+  action VARCHAR(255) NOT NULL,
+  details TEXT,
+  ip_address VARCHAR(45),
+  user_agent TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- --------------------------------------------------------
+-- Tabel `notifications`
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS notifications (
+  notif_id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE,
+  type VARCHAR(50) NOT NULL,
+  message TEXT NOT NULL,
+  is_read BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- --------------------------------------------------------
+-- Tabel `announcements`
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS announcements (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  content TEXT NOT NULL,
+  type VARCHAR(50) NOT NULL,
+  image_path VARCHAR(255),
+  is_pinned BOOLEAN DEFAULT FALSE,
+  created_by INTEGER REFERENCES users(user_id) ON DELETE SET NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- --------------------------------------------------------
+-- Tabel `messages` (Chat)
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS messages (
+  msg_id SERIAL PRIMARY KEY,
+  sender_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE,
+  receiver_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE,
+  message TEXT NOT NULL,
+  is_read BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
 
