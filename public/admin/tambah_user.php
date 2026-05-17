@@ -1,4 +1,4 @@
-<?php require 'src/koneksi.php'; ?>
+<?php require '../src/koneksi.php'; ?>
 <!DOCTYPE html>
 <html lang="id">
 
@@ -7,15 +7,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tambah Pengguna — Alumni SMK</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style/dashboard.css">
+  <link rel="stylesheet" href="../assets/css/dashboard.css">
 </head>
 
 <body>
   <?php
-  require 'src/auth.php';
-  require 'src/koneksi.php';
+  require '../src/auth.php';
+  require '../src/koneksi.php';
   requireAdmin();
-  include 'src/navbar.php';
+  include '../src/navbar.php';
 
   $error = $success = '';
   $jurusan_list = [

@@ -1,5 +1,5 @@
 <?php 
-require 'src/koneksi.php'; 
+require '../src/koneksi.php'; 
 if (isset($_SESSION['user_id'])) {
     header('Location: index.php'); exit;
 }
@@ -11,7 +11,7 @@ if (isset($_SESSION['user_id'])) {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Daftar Akun — Portal Alumni SMK Telkom Lampung</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style/index.css">
+<link rel="stylesheet" href="../assets/css/index.css">
 </head>
 <body>
 <?php
@@ -145,7 +145,7 @@ $alumniTanpaAkun = pg_fetch_all($resAlumni) ?: [];
       <div class="brand-block">
         <!-- Logo sekolah. Ubah src jika ingin ganti gambar logo -->
         <div class="brand-logo">
-          <img src="assets/logo-asli.png" alt="Logo SMK Telkom Lampung">
+          <img src="../assets/logo-asli.png" alt="Logo SMK Telkom Lampung">
         </div>
         <h1 class="brand-name">SMK Telkom Lampung</h1>
         <p class="brand-tagline">Daftarkan akun alumni Anda di portal resmi sekolah</p>
@@ -417,6 +417,6 @@ function toggleForm() {
 // Initialize form state
 toggleForm();
 </script>
-<script src="js/bg-slideshow.js"></script>
+<script src="../assets/js/bg-slideshow.js"></script>
 </body>
 </html>

@@ -1,18 +1,16 @@
 {
   "builds": [
     { "src": "public/*.php", "use": "vercel-php@0.7.2" },
-    { "src": "public/style/**", "use": "@vercel/static" },
+    { "src": "public/auth/*.php", "use": "vercel-php@0.7.2" },
+    { "src": "public/admin/*.php", "use": "vercel-php@0.7.2" },
     { "src": "public/assets/**", "use": "@vercel/static" },
-    { "src": "public/js/**", "use": "@vercel/static" },
     { "src": "public/uploads/**", "use": "@vercel/static" }
   ],
   "routes": [
     { "src": "/src/(.*)", "status": 403 },
     { "src": "/assets/(.*)", "dest": "/public/assets/$1" },
-    { "src": "/style/(.*)", "dest": "/public/style/$1" },
-    { "src": "/js/(.*)", "dest": "/public/js/$1" },
     { "src": "/uploads/(.*)", "dest": "/public/uploads/$1" },
-    { "src": "/", "dest": "/public/login.php" },
+    { "src": "/", "dest": "/public/auth/login.php" },
     { "src": "/(.*)\\.php", "dest": "/public/$1.php" }
   ]
 }

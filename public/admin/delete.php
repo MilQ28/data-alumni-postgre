@@ -1,6 +1,6 @@
 <?php
-require 'src/auth.php';
-require 'src/koneksi.php';
+require '../src/auth.php';
+require '../src/koneksi.php';
 requireAdmin();
 
 $id = (int)($_GET['id'] ?? 0);
@@ -18,6 +18,6 @@ if ($id) {
 
     pg_query_params($conn, "DELETE FROM alumni WHERE id_alumni=$1", array($id));
 }
-header('Location: dashboard_admin.php');
+header('Location: ../admin/dashboard_admin.php');
 exit;
 ?>

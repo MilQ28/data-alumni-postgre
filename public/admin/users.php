@@ -1,6 +1,6 @@
 <?php 
-require 'src/koneksi.php'; 
-require 'src/auth.php';
+require '../src/koneksi.php'; 
+require '../src/auth.php';
 requireAdmin(); 
 ?>
 <!DOCTYPE html>
@@ -10,11 +10,11 @@ requireAdmin();
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Manajemen Pengguna — Alumni SMK</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style/dashboard.css">
+<link rel="stylesheet" href="../assets/css/dashboard.css">
 </head>
 <body>
 <?php
-include 'src/navbar.php';
+include '../src/navbar.php';
 
 $search = trim($_GET['search'] ?? '');
 $status = trim($_GET['status'] ?? '');

@@ -1,6 +1,6 @@
 <?php 
-require 'src/koneksi.php'; 
-require 'src/auth.php';
+require '../src/koneksi.php'; 
+require '../src/auth.php';
 requireAdmin(); 
 ?>
 <!DOCTYPE html>
@@ -10,11 +10,11 @@ requireAdmin();
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard Admin — Portal Alumni SMK Telkom Lampung</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style/dashboard.css">
+<link rel="stylesheet" href="../assets/css/dashboard.css">
 </head>
 <body>
 <?php
-include 'src/navbar.php';
+include '../src/navbar.php';
 
 // ==============================================================================
 // MENGAMBIL DATA STATISTIK UNTUK DASHBOARD
@@ -307,7 +307,7 @@ $alumniBelumTerdaftar = pg_fetch_all($resDataBelum) ?: [];
     </div>
   </div>
 </div>
-<script src="js/bg-slideshow-dashboard.js"></script>
-<script src="js/realtime-admin.js"></script>
+<script src="../assets/js/bg-slideshow-dashboard.js"></script>
+<script src="../assets/js/realtime-admin.js"></script>
 </body>
 </html>

@@ -13,7 +13,7 @@ if (isAdmin()) { header('Location: dashboard_admin.php'); exit; }
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Beranda — Portal Alumni SMK Telkom Lampung</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style/dashboard.css">
+<link rel="stylesheet" href="assets/css/dashboard.css">
 </head>
 <body>
 <?php
@@ -197,7 +197,7 @@ while ($row = pg_fetch_assoc($res2)) {
 <script>
 const myIdAlumni = <?= json_encode($id_alumni) ?>;
 </script>
-<script src="js/bg-slideshow-dashboard.js"></script>
-<script src="js/realtime-dashboard.js"></script>
+<script src="assets/js/bg-slideshow-dashboard.js"></script>
+<script src="assets/js/realtime-dashboard.js"></script>
 </body>
 </html>

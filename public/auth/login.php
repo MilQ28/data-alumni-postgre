@@ -1,4 +1,4 @@
-<?php require 'src/koneksi.php'; ?>
+<?php require '../src/koneksi.php'; ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login — Portal Alumni SMK Telkom Lampung</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style/index.css">
+<link rel="stylesheet" href="../assets/css/index.css">
 </head>
 <body>
 <?php
@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="brand-block">
       <!-- Logo sekolah. Ubah src jika ingin ganti gambar logo -->
       <div class="brand-logo">
-        <img src="assets/logo-asli.png" alt="Logo SMK Telkom Lampung">
+        <img src="../assets/logo-asli.png" alt="Logo SMK Telkom Lampung">
       </div>
       <h1 class="brand-name">SMK Telkom Lampung</h1>
       <p class="brand-tagline">Portal Resmi Data Alumni · Sekolah Menengah Kejuruan Telkom Lampung</p>
@@ -196,6 +196,6 @@ if (errorEl && errorEl.innerText.includes('menunggu verifikasi') && usernameEl &
     }, 5000);
 }
 </script>
-<script src="js/bg-slideshow.js"></script>
+<script src="../assets/js/bg-slideshow.js"></script>
 </body>
 </html>
