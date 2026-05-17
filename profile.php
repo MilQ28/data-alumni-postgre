@@ -18,10 +18,10 @@ include 'navbar.php';
 $error   = '';
 $success = '';
 $id_alumni = $_SESSION['id_alumni'];
+$isPureAdmin = false;
 
 if (!$id_alumni && !isAdmin()) {
     echo '<div class="page-wrapper"><div class="alert alert-error">Anda tidak memiliki data alumni yang terhubung.</div></div>';
-    include 'footer.php';
     exit;
 }
 
@@ -31,10 +31,32 @@ if (isAdmin() && isset($_GET['id'])) {
     $target_id = (int)$_GET['id'];
 }
 
-$res = pg_query_params($conn, "SELECT * FROM alumni WHERE id_alumni = $1", array($target_id));
-$alumni = pg_fetch_assoc($res);
+// Jika ini admin murni (tidak punya id_alumni) dan tidak sedang melihat profil orang lain
+if (!$target_id && isAdmin()) {
+    $isPureAdmin = true;
+    $res = pg_query_params($conn, "SELECT * FROM users WHERE id_user = $1", array($_SESSION['user_id']));
+    $user_data = pg_fetch_assoc($res);
+    $alumni = [
+        'nama' => $user_data['username'], // Admin pakai username
+        'nis' => '-',
+        'angkatan' => '-',
+        'jurusan' => '-',
+        'email' => '-',
+        'no_hp' => '-',
+        'status_kesibukan' => '-',
+        'pekerjaan' => '-',
+        'perusahaan' => '-',
+        'linkedin' => '-',
+        'biodata' => '-',
+        'foto_profil' => '',
+        'alamat' => '-'
+    ];
+} else {
+    $res = pg_query_params($conn, "SELECT * FROM alumni WHERE id_alumni = $1", array($target_id));
+    $alumni = pg_fetch_assoc($res);
+}
 
-if (!$alumni) {
+if (!$alumni && !$isPureAdmin) {
     echo '<div class="page-wrapper"><div class="alert alert-error">Data alumni tidak ditemukan.</div></div>';
     exit;
 }
@@ -49,69 +71,87 @@ $jurusan_list = [
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canEdit) {
-    // Handle foto upload
-    if (!empty($_FILES['foto']['name'])) {
-        $allowed = ['jpg','jpeg','png','webp'];
-        $ext = strtolower(pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION));
-        if (!in_array($ext, $allowed)) {
-            $error = 'Format foto tidak didukung. Gunakan JPG, PNG, atau WEBP.';
-        } elseif ($_FILES['foto']['size'] > 2 * 1024 * 1024) {
-            $error = 'Ukuran foto maksimal 2MB.';
-        } else {
-            $filename = 'foto_' . $target_id . '_' . time() . '.' . $ext;
-            move_uploaded_file($_FILES['foto']['tmp_name'], "uploads/foto_profil/$filename");
-            if ($alumni['foto_profil'] && file_exists("uploads/foto_profil/".$alumni['foto_profil'])) {
-                unlink("uploads/foto_profil/".$alumni['foto_profil']);
-            }
-            pg_query_params($conn, "UPDATE alumni SET foto_profil=$1 WHERE id_alumni=$2", array($filename, $target_id));
-            $alumni['foto_profil'] = $filename;
-        }
-    }
-
-    if (!$error) {
-        $nama       = trim($_POST['nama']       ?? '');
-        $angkatan   = trim($_POST['angkatan']   ?? '');
-        $jurusan    = trim($_POST['jurusan']    ?? '');
-        $email      = trim($_POST['email']      ?? '');
-        $no_hp      = trim($_POST['no_hp']      ?? '');
-        $pekerjaan  = trim($_POST['pekerjaan']  ?? '');
-        $perusahaan = trim($_POST['perusahaan'] ?? '');
-        $alamat     = trim($_POST['alamat']     ?? '');
-
-        if (!$nama || !$angkatan || !$jurusan || !$email || !$no_hp) {
-            $error = 'Field wajib tidak boleh kosong.';
-        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $error = 'Format email tidak valid.';
-        } else {
-            // Cek email duplikat (selain dirinya)
-            // Cek email duplikat (selain dirinya)
-            $sres = pg_query_params($conn, "SELECT id_alumni FROM alumni WHERE email=$1 AND id_alumni!=$2", array($email, $target_id));
-
-            if (pg_fetch_assoc($sres)) {
-                $error = 'Email sudah digunakan alumni lain.';
+    // Jika admin murni, lewati semua urusan alumni
+    if ($isPureAdmin) {
+        // Hanya boleh ganti password
+        if (!empty($_POST['new_password'])) {
+            $new_pw  = $_POST['new_password'];
+            $conf_pw = $_POST['confirm_new_password'] ?? '';
+            if (strlen($new_pw) < 6) {
+                $error = 'Password baru minimal 6 karakter.';
+            } elseif ($new_pw !== $conf_pw) {
+                $error = 'Konfirmasi password tidak cocok.';
             } else {
-                $sql = "UPDATE alumni SET nama=$1,angkatan=$2,jurusan=$3,email=$4,no_hp=$5,pekerjaan=$6,perusahaan=$7,alamat=$8 WHERE id_alumni=$9";
-                pg_query_params($conn, $sql, array($nama, $angkatan, $jurusan, $email, $no_hp, $pekerjaan, $perusahaan, $alamat, $target_id));
-                $success = 'Profil berhasil diperbarui.';
-
-                $res = pg_query_params($conn, "SELECT * FROM alumni WHERE id_alumni=$1", array($target_id));
-                $alumni = pg_fetch_assoc($res);
+                $hashed = password_hash($new_pw, PASSWORD_DEFAULT);
+                pg_query_params($conn, "UPDATE users SET password=$1 WHERE id_user=$2", array($hashed, $_SESSION['user_id']));
+                $success = 'Password berhasil diperbarui.';
             }
         }
-    }
+    } else {
+        // Logika asli untuk Alumni
+        // Handle foto upload
+        if (!empty($_FILES['foto']['name'])) {
+            $allowed = ['jpg','jpeg','png','webp'];
+            $ext = strtolower(pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION));
+            if (!in_array($ext, $allowed)) {
+                $error = 'Format foto tidak didukung. Gunakan JPG, PNG, atau WEBP.';
+            } elseif ($_FILES['foto']['size'] > 2 * 1024 * 1024) {
+                $error = 'Ukuran foto maksimal 2MB.';
+            } else {
+                $filename = 'foto_' . $target_id . '_' . time() . '.' . $ext;
+                move_uploaded_file($_FILES['foto']['tmp_name'], "uploads/foto_profil/$filename");
+                if ($alumni['foto_profil'] && file_exists("uploads/foto_profil/".$alumni['foto_profil'])) {
+                    unlink("uploads/foto_profil/".$alumni['foto_profil']);
+                }
+                pg_query_params($conn, "UPDATE alumni SET foto_profil=$1 WHERE id_alumni=$2", array($filename, $target_id));
+                $alumni['foto_profil'] = $filename;
+            }
+        }
 
-    // Ganti password
-    if (!$error && !empty($_POST['new_password'])) {
-        $new_pw  = $_POST['new_password'];
-        $conf_pw = $_POST['confirm_new_password'] ?? '';
-        if (strlen($new_pw) < 6) {
-            $error = 'Password baru minimal 6 karakter.';
-        } elseif ($new_pw !== $conf_pw) {
-            $error = 'Konfirmasi password tidak cocok.';
-        } else {
-            $hashed = password_hash($new_pw, PASSWORD_DEFAULT);
-            pg_query_params($conn, "UPDATE users SET password=$1 WHERE id_alumni=$2", array($hashed, $target_id));
-            $success = 'Profil dan password berhasil diperbarui.';
+        if (!$error) {
+            $nama       = trim($_POST['nama']       ?? '');
+            $angkatan   = trim($_POST['angkatan']   ?? '');
+            $jurusan    = trim($_POST['jurusan']    ?? '');
+            $email      = trim($_POST['email']      ?? '');
+            $no_hp      = trim($_POST['no_hp']      ?? '');
+            $pekerjaan  = trim($_POST['pekerjaan']  ?? '');
+            $perusahaan = trim($_POST['perusahaan'] ?? '');
+            $alamat     = trim($_POST['alamat']     ?? '');
+
+            if (!$nama || !$angkatan || !$jurusan || !$email || !$no_hp) {
+                $error = 'Field wajib tidak boleh kosong.';
+            } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $error = 'Format email tidak valid.';
+            } else {
+                // Cek email duplikat (selain dirinya)
+                $sres = pg_query_params($conn, "SELECT id_alumni FROM alumni WHERE email=$1 AND id_alumni!=$2", array($email, $target_id));
+
+                if (pg_fetch_assoc($sres)) {
+                    $error = 'Email sudah digunakan alumni lain.';
+                } else {
+                    $sql = "UPDATE alumni SET nama=$1,angkatan=$2,jurusan=$3,email=$4,no_hp=$5,pekerjaan=$6,perusahaan=$7,alamat=$8 WHERE id_alumni=$9";
+                    pg_query_params($conn, $sql, array($nama, $angkatan, $jurusan, $email, $no_hp, $pekerjaan, $perusahaan, $alamat, $target_id));
+                    $success = 'Profil berhasil diperbarui.';
+
+                    $res = pg_query_params($conn, "SELECT * FROM alumni WHERE id_alumni=$1", array($target_id));
+                    $alumni = pg_fetch_assoc($res);
+                }
+            }
+        }
+
+        // Ganti password untuk alumni
+        if (!$error && !empty($_POST['new_password'])) {
+            $new_pw  = $_POST['new_password'];
+            $conf_pw = $_POST['confirm_new_password'] ?? '';
+            if (strlen($new_pw) < 6) {
+                $error = 'Password baru minimal 6 karakter.';
+            } elseif ($new_pw !== $conf_pw) {
+                $error = 'Konfirmasi password tidak cocok.';
+            } else {
+                $hashed = password_hash($new_pw, PASSWORD_DEFAULT);
+                pg_query_params($conn, "UPDATE users SET password=$1 WHERE id_alumni=$2", array($hashed, $target_id));
+                $success = 'Profil dan password berhasil diperbarui.';
+            }
         }
     }
 }
@@ -165,6 +205,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canEdit) {
         </div>
         <h3 class="profile-name"><?= htmlspecialchars($alumni['nama']) ?></h3>
         <p class="profile-jurusan"><?= htmlspecialchars($alumni['jurusan']) ?></p>
+        <?php if (!$isPureAdmin): ?>
         <div class="profile-badges">
           <span class="badge badge-blue">Angkatan <?= $alumni['angkatan'] ?></span>
           <span class="badge badge-gray">NIS: <?= htmlspecialchars($alumni['nis']) ?></span>
@@ -191,6 +232,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canEdit) {
           </div>
           <?php endif; ?>
         </div>
+        <?php endif; ?>
       </div>
     </div>
 
@@ -202,6 +244,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canEdit) {
         <form method="POST" enctype="multipart/form-data" class="auth-form">
           <input type="file" id="fotoInput" name="foto" accept="image/*" style="display:none" onchange="previewFoto(this)">
 
+          <?php if (!$isPureAdmin): ?>
           <div class="form-section-title">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             Data Pribadi
@@ -291,6 +334,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canEdit) {
               <textarea name="alamat" rows="3" placeholder="Alamat lengkap"><?= htmlspecialchars($alumni['alamat'] ?? '') ?></textarea>
             </div>
           </div>
+          <?php endif; ?>
 
           <div class="form-section-title">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
