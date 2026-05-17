@@ -1,4 +1,9 @@
-﻿<?php require 'koneksi.php'; ?>
+<?php 
+require 'koneksi.php'; 
+if (isset($_SESSION['user_id'])) {
+    header('Location: index.php'); exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -10,11 +15,6 @@
 </head>
 <body>
 <?php
-if (isset($_SESSION['user_id'])) {
-    header('Location: index.php'); exit;
-}
-require 'koneksi.php';
-
 $error   = '';
 $success = '';
 

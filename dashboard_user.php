@@ -1,4 +1,11 @@
-﻿<?php require 'koneksi.php'; ?>
+<?php 
+require 'koneksi.php'; 
+require 'auth.php';
+requireLogin(); // Wajib login untuk akses halaman ini
+
+// Jika yang login adalah admin, lempar ke dashboard admin
+if (isAdmin()) { header('Location: dashboard_admin.php'); exit; }
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -10,12 +17,6 @@
 </head>
 <body>
 <?php
-require 'auth.php';
-require 'koneksi.php';
-requireLogin(); // Wajib login untuk akses halaman ini
-
-// Jika yang login adalah admin, lempar ke dashboard admin
-if (isAdmin()) { header('Location: dashboard_admin.php'); exit; }
 include 'navbar.php';
 
 // ==============================================================================

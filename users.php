@@ -1,4 +1,8 @@
-﻿<?php require 'koneksi.php'; ?>
+<?php 
+require 'koneksi.php'; 
+require 'auth.php';
+requireAdmin(); 
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -10,9 +14,6 @@
 </head>
 <body>
 <?php
-require 'auth.php';
-require 'koneksi.php';
-requireAdmin();
 include 'navbar.php';
 
 $search = trim($_GET['search'] ?? '');

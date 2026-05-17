@@ -1,4 +1,4 @@
-﻿<?php require 'koneksi.php'; ?>
+<?php require 'koneksi.php'; ?>
 <!DOCTYPE html>
 <html lang="id">
 
