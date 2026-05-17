@@ -11,6 +11,7 @@
 <body>
 <?php
 require 'auth.php';
+require 'koneksi.php';
 requireAdmin(); // Wajib admin
 include 'navbar.php';
 
