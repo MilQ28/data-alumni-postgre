@@ -21,10 +21,10 @@
 
   // Daftar foto background. Tambah path foto baru di sini.
   var images = [
-    "assets/bg-sekolah.jpg",   // Foto 1: Gedung sekolah
-    "assets/bg-sekolah-2.jpg", // Foto 2: Lab komputer
-    "assets/bg-sekolah-3.jpg", // Foto 3: Wisuda
-    "assets/bg-sekolah-4.jpg", // Foto 4: Aerial kampus
+    "/assets/bg-sekolah.jpg",   // Foto 1: Gedung sekolah
+    "/assets/bg-sekolah-2.jpg", // Foto 2: Lab komputer
+    "/assets/bg-sekolah-3.jpg", // Foto 3: Wisuda
+    "/assets/bg-sekolah-4.jpg", // Foto 4: Aerial kampus
   ];
 
   // Berapa lama setiap foto ditampilkan (dalam milidetik)

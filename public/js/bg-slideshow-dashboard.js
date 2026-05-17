@@ -20,10 +20,10 @@
   // ============================================================
 
   var images = [
-    "assets/bg-sekolah.jpg",
-    "assets/bg-sekolah-2.jpg",
-    "assets/bg-sekolah-3.jpg",
-    "assets/bg-sekolah-4.jpg",
+    "/assets/bg-sekolah.jpg",
+    "/assets/bg-sekolah-2.jpg",
+    "/assets/bg-sekolah-3.jpg",
+    "/assets/bg-sekolah-4.jpg",
   ];
 
   // Kecepatan ganti foto (milidetik): 7000 = 7 detik
