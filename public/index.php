@@ -1,5 +1,5 @@
 <?php
-require '../src/koneksi.php'; // Koneksi sekaligus memulai sesi database
+require 'src/koneksi.php'; // Koneksi sekaligus memulai sesi database
 if (isset($_SESSION['user_id'])) {
     $role = $_SESSION['role'];
     if ($role === 'superadmin' || $role === 'admin') {

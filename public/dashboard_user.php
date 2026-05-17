@@ -1,6 +1,6 @@
 <?php 
-require '../src/koneksi.php'; 
-require '../src/auth.php';
+require 'src/koneksi.php'; 
+require 'src/auth.php';
 requireLogin(); // Wajib login untuk akses halaman ini
 
 // Jika yang login adalah admin, lempar ke dashboard admin
@@ -17,7 +17,7 @@ if (isAdmin()) { header('Location: dashboard_admin.php'); exit; }
 </head>
 <body>
 <?php
-include '../src/navbar.php';
+include 'src/navbar.php';
 
 // ==============================================================================
 // 1. MENGAMBIL DATA PROFIL PENGGUNA (ALUMNI) SAAT INI

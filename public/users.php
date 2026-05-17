@@ -1,6 +1,6 @@
 <?php 
-require '../src/koneksi.php'; 
-require '../src/auth.php';
+require 'src/koneksi.php'; 
+require 'src/auth.php';
 requireAdmin(); 
 ?>
 <!DOCTYPE html>
@@ -14,7 +14,7 @@ requireAdmin();
 </head>
 <body>
 <?php
-include '../src/navbar.php';
+include 'src/navbar.php';
 
 $search = trim($_GET['search'] ?? '');
 $status = trim($_GET['status'] ?? '');

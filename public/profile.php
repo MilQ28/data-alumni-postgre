@@ -1,4 +1,4 @@
-<?php require '../src/koneksi.php'; ?>
+<?php require 'src/koneksi.php'; ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -10,10 +10,10 @@
 </head>
 <body>
 <?php
-require '../src/auth.php';
-require '../src/koneksi.php';
+require 'src/auth.php';
+require 'src/koneksi.php';
 requireLogin();
-include '../src/navbar.php';
+include 'src/navbar.php';
 
 $error   = '';
 $success = '';

@@ -6,6 +6,7 @@
     { "src": "public/uploads/**", "use": "@vercel/static" }
   ],
   "routes": [
+    { "src": "/src/(.*)", "status": 403 },
     { "src": "/assets/(.*)", "dest": "/public/assets/$1" },
     { "src": "/style/(.*)", "dest": "/public/style/$1" },
     { "src": "/uploads/(.*)", "dest": "/public/uploads/$1" },
