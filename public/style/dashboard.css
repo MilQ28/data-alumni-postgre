@@ -80,9 +80,10 @@ body {
   width: 38px;
   height: 38px;
   object-fit: contain;
-  border-radius: 6px;
+  border-radius: 50%; /* Membuat logo bulat */
   background: rgba(255,255,255,0.15);
   padding: 3px;
+  border: 1.5px solid rgba(255,255,255,0.3); /* Tambah border halus */
 }
 
 .nav-brand svg {

@@ -116,6 +116,8 @@ body {
   align-items: center;
   justify-content: center;
   padding: 8px;
+  overflow: hidden; /* Mencegah ujung gambar tajam keluar dari lingkaran */
+  border: 2px solid rgba(255,255,255,0.3); /* Tambah border halus */
 }
 
 /* Pastikan gambar logo memenuhi kotak */

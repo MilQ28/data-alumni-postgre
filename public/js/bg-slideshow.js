@@ -24,12 +24,12 @@
 
   // Daftar foto background. Tambah path foto baru di sini.
   var images = [
-    baseUrl + "/assets/bg-sekolah.jpg",   // Foto 1: Gedung sekolah
-    baseUrl + "/assets/bg-sekolah-2.jpg", // Foto 2: Lab komputer
-    baseUrl + "/assets/bg-sekolah-3.jpg", // Foto 3: Wisuda
-    baseUrl + "/assets/bg-sekolah-4.jpg", // Foto 4: Aerial kampus
-    baseUrl + "/assets/bg-sekolah-5.png", // Foto 5: Gedung modern (Estetik)
-    baseUrl + "/assets/bg-sekolah-6.png", // Foto 6: Interior lounge (Estetik)
+    baseUrl + "/assets/bg-sekolah-1.png", // Foto 1 (Upload)
+    baseUrl + "/assets/bg-sekolah-2.png", // Foto 2 (Upload)
+    baseUrl + "/assets/bg-sekolah-3.png", // Foto 3 (Upload)
+    baseUrl + "/assets/bg-sekolah-4.png", // Foto 4 (Upload)
+    baseUrl + "/assets/bg-sekolah-5.png", // Foto 5 (Generate)
+    baseUrl + "/assets/bg-sekolah-6.png", // Foto 6 (Generate)
   ];
 
   // Berapa lama setiap foto ditampilkan (dalam milidetik)

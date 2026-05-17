@@ -23,10 +23,10 @@
   const baseUrl = scriptUrl.substring(0, scriptUrl.lastIndexOf('/js/'));
 
   var images = [
-    baseUrl + "/assets/bg-sekolah.jpg",
-    baseUrl + "/assets/bg-sekolah-2.jpg",
-    baseUrl + "/assets/bg-sekolah-3.jpg",
-    baseUrl + "/assets/bg-sekolah-4.jpg",
+    baseUrl + "/assets/bg-sekolah-1.png",
+    baseUrl + "/assets/bg-sekolah-2.png",
+    baseUrl + "/assets/bg-sekolah-3.png",
+    baseUrl + "/assets/bg-sekolah-4.png",
     baseUrl + "/assets/bg-sekolah-5.png",
     baseUrl + "/assets/bg-sekolah-6.png",
   ];
