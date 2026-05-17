@@ -1,4 +1,4 @@
-<?php require '../src/koneksi.php'; ?>
+<?php require __DIR__ . '/../src/koneksi.php'; ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -10,11 +10,11 @@
 </head>
 <body>
 <?php
-require '../src/auth.php';
-require '../src/koneksi.php';
+require __DIR__ . '/../src/auth.php';
+require __DIR__ . '/../src/koneksi.php';
 requireAdmin();
 $path_prefix = '../';
-include '../src/navbar.php';
+include __DIR__ . '/../src/navbar.php';
 
 $error = $success = '';
 $jurusan_list = [

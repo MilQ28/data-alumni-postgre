@@ -1,4 +1,4 @@
-<?php require '../src/koneksi.php'; ?>
+<?php require __DIR__ . '/../src/koneksi.php'; ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -17,7 +17,7 @@
 if (isset($_SESSION['user_id'])) {
     $role = $_SESSION['role'];
     // Jika role-nya user, pergi ke dashboard_user, jika admin ke dashboard_admin
-    header('Location: ' . ($role === 'user' ? 'dashboard_user.php' : 'dashboard_admin.php'));
+    header('Location: ' . ($role === 'user' ? '../dashboard_user.php' : '../admin/dashboard_admin.php'));
     exit;
 }
 
@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['id_alumni']= $user['id_alumni'];
                 
                 // Pindahkan ke dashboard sesuai jabatannya (role)
-                header('Location: ' . ($user['role'] === 'user' ? 'dashboard_user.php' : 'dashboard_admin.php'));
+                header('Location: ' . ($user['role'] === 'user' ? '../dashboard_user.php' : '../admin/dashboard_admin.php'));
                 exit;
             }
         } else {

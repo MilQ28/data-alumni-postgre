@@ -1,6 +1,6 @@
 <?php 
-require '../src/koneksi.php'; 
-require '../src/auth.php';
+require __DIR__ . '/../src/koneksi.php'; 
+require __DIR__ . '/../src/auth.php';
 requireAdmin(); 
 ?>
 <!DOCTYPE html>
@@ -15,7 +15,7 @@ requireAdmin();
 <body>
 <?php
 $path_prefix = '../';
-include '../src/navbar.php';
+include __DIR__ . '/../src/navbar.php';
 
 // ==============================================================================
 // MENGAMBIL DATA STATISTIK UNTUK DASHBOARD

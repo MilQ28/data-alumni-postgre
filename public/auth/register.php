@@ -1,7 +1,7 @@
 <?php 
-require '../src/koneksi.php'; 
+require __DIR__ . '/../src/koneksi.php'; 
 if (isset($_SESSION['user_id'])) {
-    header('Location: index.php'); exit;
+    header('Location: ../index.php'); exit;
 }
 ?>
 <!DOCTYPE html>

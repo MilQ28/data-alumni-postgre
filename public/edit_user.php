@@ -1,4 +1,4 @@
-<?php require 'src/koneksi.php'; ?>
+<?php require __DIR__ . '/src/koneksi.php'; ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -11,9 +11,9 @@
 <body>
 <?php
 require 'src/auth.php';
-require 'src/koneksi.php';
+require __DIR__ . '/src/koneksi.php';
 requireAdmin();
-include 'src/navbar.php';
+include __DIR__ . '/src/navbar.php';
 
 $id = (int)($_GET['id'] ?? 0);
 

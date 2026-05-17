@@ -1,6 +1,6 @@
 <?php
-require '../src/auth.php';
-require '../src/koneksi.php';
+require __DIR__ . '/../src/auth.php';
+require __DIR__ . '/../src/koneksi.php';
 requireAdmin();
 
 $id = (int)($_GET['id'] ?? 0);
