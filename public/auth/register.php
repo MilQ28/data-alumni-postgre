@@ -145,7 +145,7 @@ $alumniTanpaAkun = pg_fetch_all($resAlumni) ?: [];
       <div class="brand-block">
         <!-- Logo sekolah. Ubah src jika ingin ganti gambar logo -->
         <div class="brand-logo">
-          <img src="../assets/logo-asli.png" alt="Logo SMK Telkom Lampung">
+          <img src="../assets/telkom-logo-removebg.png" alt="Logo SMK Telkom Lampung">
         </div>
         <h1 class="brand-name">SMK Telkom Lampung</h1>
         <p class="brand-tagline">Daftarkan akun alumni Anda di portal resmi sekolah</p>

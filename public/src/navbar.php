@@ -5,7 +5,7 @@ $current = basename($_SERVER['PHP_SELF']);
 <nav class="navbar">
   <div class="nav-brand">
     <!-- Logo SMK Telkom Lampung -->
-    <img src="assets/logo-asli.png" alt="Logo SMK Telkom Lampung">
+    <img src="assets/telkom-logo-removebg.png" alt="Logo SMK Telkom Lampung">
     <span>SMK Telkom Lampung</span>
   </div>
 
