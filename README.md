@@ -1,132 +1,153 @@
-# Portal Alumni SMK Telkom Lampung
+# Portal Alumni SMK Telkom
 
-Website manajemen data portal resmi alumni SMK Telkom Lampung berbasis PHP & MySQLi.
-Dilengkapi dengan tema warna sekolah, slideshow background dinamis, dan komentar edukatif untuk pembelajaran pemula.
+[![Vercel Deployment](https://img.shields.io/badge/Deploy-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com)
+[![PHP Version](https://img.shields.io/badge/PHP-8.x-777BB4?style=for-the-badge&logo=php)](https://www.php.net/)
+[![Database](https://img.shields.io/badge/Database-PostgreSQL-336791?style=for-the-badge&logo=postgresql)](https://www.postgresql.org/)
+
+Sebuah platform web modern dan aman untuk pendataan, pencarian, dan pengelolaan data alumni SMK Telkom. Project ini dirancang dengan standar produksi, mengutamakan keamanan, performa serverless, dan desain yang sepenuhnya responsif.
 
 ---
 
-## Struktur Proyek
+## 📌 Tentang Project
 
-```
-MANAJEMEN-DATA-ALUMNI/
+Website Portal Alumni ini dibuat untuk menjembatani komunikasi antara sekolah dan alumni serta mempermudah pendataan karir alumni setelah lulus. Project ini mengimplementasikan arsitektur database modern menggunakan **Supabase (PostgreSQL)** dan dideploy secara serverless di **Vercel**.
+
+### Target Pengguna
+- **Alumni**: Mendaftar, mengisi data diri, riwayat pekerjaan, dan mencari alumni lain.
+- **Admin**: Memverifikasi pendaftaran alumni dan mengelola data.
+- **Superadmin**: Memiliki akses penuh terhadap manajemen pengguna dan sistem.
+
+---
+
+## ✨ Fitur Utama
+
+### Keamanan (Production-Ready)
+- [x] **CSRF Protection**: Token anti-pemalsuan request di setiap form POST.
+- [x] **Session Security**: Session disimpan di database (PostgreSQL) untuk mendukung arsitektur Serverless Vercel.
+- [x] **Password Hashing**: Menggunakan `password_hash()` dengan algoritma BCRYPT.
+- [x] **SQL Injection Prevention**: 100% menggunakan *Prepared Statements* (`pg_query_params`).
+- [x] **Path Protection**: Akses langsung ke folder inti (`src/`) diblokir via konfigurasi Vercel (403 Forbidden).
+
+### Fungsionalitas
+- [x] **Autentikasi Multi-Role**: Sistem login terpisah untuk Alumni, Admin, dan Superadmin.
+- [x] **Manajemen Profil**: Unggah foto profil, edit data diri, dan status pekerjaan.
+- [x] **Pencarian Responsif**: Fitur pencarian alumni berdasarkan nama atau jurusan dengan query *case-insensitive* (`ILIKE`).
+- [x] **Persetujuan Akun**: Sistem antrean (pending/approved/rejected) untuk pendaftar baru oleh Admin.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Backend**: PHP 8.x (Procedural with security best practices)
+- **Database**: PostgreSQL (Hosted on Supabase)
+- **Frontend**: Vanilla HTML5, CSS3 (Modern Glassmorphism UI), JavaScript
+- **Hosting**: Vercel (Serverless Environment)
+
+---
+
+## 📁 Struktur Folder
+
+```text
 ├── database/
-│   └── db_alumni.sql          # File SQL untuk import database
-├── assets/
-│   ├── bg-sekolah.jpg         # Foto background utama
-│   ├── bg-slideshow.js        # Script slideshow login/register
-│   └── bg-slideshow-dashboard.js # Script slideshow dashboard
-├── uploads/
-│   └── foto_profil/           # Folder penyimpanan foto profil
-├── style/
-│   ├── index.css              # CSS halaman login & register (tema SMK Telkom)
-│   └── dashboard.css          # CSS halaman dashboard (tema SMK Telkom)
-├── index.php                  # Redirect otomatis (login/dashboard)
-├── login.php                  # Halaman masuk
-├── register.php               # Halaman daftar alumni
-├── logout.php                 # Proses logout
-├── auth.php                   # Helper autentikasi (berkomentar)
-├── koneksi.php                # Koneksi database MySQLi Procedural (berkomentar)
-├── navbar.php                 # Komponen navbar dengan Logo Sekolah
-├── dashboard_admin.php        # Dashboard admin/superadmin
-├── dashboard_user.php         # Dashboard user alumni
-├── profile.php                # Halaman profil & edit
-├── users.php                  # Manajemen pengguna (admin)
-├── tambah.php                 # Tambah data alumni (admin)
-├── tambah_user.php            # Tambah pengguna (admin)
-├── edit.php                   # Edit data alumni (admin)
-├── edit_user.php              # Edit pengguna (admin)
-├── delete.php                 # Hapus data alumni (admin)
-└── delete_user.php            # Aksi approve/reject/hapus user
+│   ├── db_alumni.sql              # Skema database MySQL (Legacy)
+│   └── db_alumni_postgres.sql     # Skema database PostgreSQL (Supabase)
+├── public/                        # Root folder yang dapat diakses publik
+│   ├── assets/                    # Gambar, logo, dan file JS
+│   ├── style/                     # Kumpulan file CSS
+│   ├── uploads/                   # Folder penyimpanan foto profil alumni
+│   ├── src/                       # File inti sistem (Dilindungi)
+│   │   ├── auth.php               # Logika otorisasi role
+│   │   ├── koneksi.php           # Koneksi database & init session
+│   │   ├── navbar.php             # Komponen navigasi
+│   │   └── session_handler.php    # Custom session handler untuk DB
+│   ├── index.php                  # Halaman utama / landing
+│   ├── login.php                  # Halaman login
+│   └── [file-page-lain].php       # Halaman fitur aplikasi
+└── vercel.json                    # Konfigurasi routing & build Vercel
 ```
 
 ---
 
-## Cara Install
+## 🚀 Panduan Instalasi Lokal
 
-### 1. Persyaratan
-- PHP 7.4+
-- MySQL 5.7+ / MariaDB 10.3+
-- Web server: Apache/Nginx (atau XAMPP/Laragon)
+### Prasyarat
+- PHP 8.x terinstall di komputer Anda.
+- Ekstensi `pgsql` dan `pdo_pgsql` aktif di `php.ini`.
+- Git terinstall.
 
-### 2. Setup Database
-1. Buka **phpMyAdmin** atau MySQL client
-2. Import file `database/db_alumni.sql`
-3. Database `db_alumni` akan dibuat otomatis
+### Langkah-langkah
 
-### 3. Konfigurasi Koneksi
-Edit file `koneksi.php` sesuai konfigurasi server Anda:
-```php
-$host     = 'localhost';
-$dbname   = 'db_alumni';
-$username = 'root';     // sesuaikan
-$password = '';          // sesuaikan
-```
+1. **Clone Repository**
+   ```bash
+   git clone https://github.com/MilQ28/data-alumni-postgre.git
+   cd data-alumni-postgre
+   ```
 
-### 4. Izin Folder
-Pastikan folder `uploads/foto_profil/` dapat ditulis:
-```bash
-chmod 775 uploads/foto_profil/
-```
+2. **Setup Database**
+   - Buat project baru di [Supabase](https://supabase.com).
+   - Salin isi dari `database/db_alumni_postgres.sql`.
+   - Jalankan script tersebut di SQL Editor Supabase untuk membuat tabel dan tipe data.
 
-### 5. Jalankan
-Letakkan folder di `htdocs` (XAMPP) atau `www` (Laragon), lalu buka:
-```
-http://localhost/MANAJEMEN-DATA-ALUMNI/
-```
+3. **Setup Environment Variables**
+   Buat file `.env` di root project (atau set di environment OS Anda) dengan isi:
+   ```env
+   DB_HOST=your-supabase-pooler-host.supabase.com
+   DB_PORT=6543
+   DB_NAME=postgres
+   DB_USER=postgres.your-project-id
+   DB_PASS=your-database-password
+   ```
 
----
-
-## Akun Default
-
-| Username    | Password   | Role       |
-|-------------|------------|------------|
-| admin       | password   | Admin      |
-| superadmin  | password   | Superadmin |
-
-> **Penting:** Ganti password setelah pertama kali login!
+4. **Jalankan Server Lokal**
+   Karena struktur project menggunakan folder `public` sebagai root, jalankan PHP built-in server dengan mengarah ke folder tersebut:
+   ```bash
+   php -S localhost:8000 -t public
+   ```
+   Akses aplikasi di browser melalui `http://localhost:8000`.
 
 ---
 
-## Alur Penggunaan
+## ☁️ Deployment ke Vercel
 
-### Alumni Baru (Register)
-1. Buka halaman utama → otomatis ke `login.php`
-2. Klik **"Daftar sebagai Alumni"** → `register.php`
-3. Isi data akun + data alumni lengkap
-4. Kirim pendaftaran → status **Pending**
-5. Tunggu verifikasi admin
-6. Setelah disetujui → bisa login
+Project ini sudah siap dideploy ke Vercel dengan konfigurasi `vercel.json` yang tersedia.
 
-### Admin
-- **Approve / Reject** pendaftaran dari dashboard
-- **Kelola** semua data alumni (tambah, edit, hapus)
-- **Kelola** pengguna (ubah role, status, reset password)
-
-### Superadmin (semua akses admin +)
-- Dapat **menghapus** akun pengguna secara permanen
-- Dapat mengubah role ke **admin**
+1. Install Vercel CLI atau hubungkan repository ini langsung ke akun Vercel Anda.
+2. Pastikan Anda menambahkan **Environment Variables** di dashboard Vercel sesuai dengan daftar di atas.
+3. Vercel akan otomatis membaca file `vercel.json` dan mengarahkan root folder ke `public/`.
 
 ---
 
-## Fitur Utama
+## 🗺️ Roadmap Masa Depan
 
-- ✅ Register alumni dengan verifikasi data lengkap
-- ✅ Sistem pending → approve/reject oleh admin
-- ✅ Login otomatis redirect sesuai role
-- ✅ Dashboard statistik (admin)
-- ✅ Profil alumni + upload foto profil
-- ✅ Edit profil sendiri (user hanya data miliknya)
-- ✅ Pencarian & filter data alumni
-- ✅ 3 level akses: user, admin, superadmin
-- ✅ Keamanan: password di-hash (bcrypt), MySQLi prepared statements
-- ✅ Desain Modern & Responsif (Tema Resmi SMK Telkom Lampung)
-- ✅ Komentar Edukatif pada File PHP untuk Panduan Belajar Pemula
+- [ ] **Email Verification**: Verifikasi email saat pendaftaran alumni.
+- [ ] **Export Data**: Fitur export daftar alumni ke format PDF/Excel untuk Admin.
+- [ ] **Dark Mode**: Opsi tema gelap untuk kenyamanan pengguna.
+- [ ] **RESTful API**: Menyediakan endpoint API untuk integrasi dengan sistem sekolah lain.
 
 ---
 
-## Catatan Keamanan & Edukasi
-- File utama `.php` telah dilengkapi komentar penjelasan (Bahasa Indonesia) untuk memudahkan pemula mempelajari logika sistem.
-- Password di-hash menggunakan `password_hash()` PHP (bcrypt).
-- Semua query database menggunakan **MySQLi Procedural Prepared Statements** untuk mencegah SQL Injection.
-- Session-based authentication untuk pengelolaan login.
-- Input disanitasi menggunakan `htmlspecialchars()`.
+## 🤝 Kontribusi
+
+Kontribusi selalu terbuka! Jika Anda ingin meningkatkan project ini:
+1. Fork repository ini.
+2. Buat branch fitur baru (`git checkout -b fitur-keren`).
+3. Commit perubahan Anda (`git commit -m 'Menambahkan fitur keren'`).
+4. Push ke branch tersebut (`git push origin fitur-keren`).
+5. Buat Pull Request.
+
+---
+
+## 📄 Lisensi
+
+Project ini dilisensikan di bawah **MIT License**. Lihat file `LICENSE` untuk informasi lebih lanjut.
+
+---
+
+## 👤 Author
+
+**MilQ28**
+- GitHub: [@MilQ28](https://github.com/MilQ28)
+- Email: your.email@example.com
+
+---
+*Project ini dikembangkan dengan ❤️ untuk kemajuan komunikasi Alumni SMK Telkom.*
