@@ -27,6 +27,8 @@
     baseUrl + "/assets/bg-sekolah-2.jpg",
     baseUrl + "/assets/bg-sekolah-3.jpg",
     baseUrl + "/assets/bg-sekolah-4.jpg",
+    baseUrl + "/assets/bg-sekolah-5.png",
+    baseUrl + "/assets/bg-sekolah-6.png",
   ];
 
   // Kecepatan ganti foto (milidetik): 7000 = 7 detik

@@ -28,6 +28,8 @@
     baseUrl + "/assets/bg-sekolah-2.jpg", // Foto 2: Lab komputer
     baseUrl + "/assets/bg-sekolah-3.jpg", // Foto 3: Wisuda
     baseUrl + "/assets/bg-sekolah-4.jpg", // Foto 4: Aerial kampus
+    baseUrl + "/assets/bg-sekolah-5.png", // Foto 5: Gedung modern (Estetik)
+    baseUrl + "/assets/bg-sekolah-6.png", // Foto 6: Interior lounge (Estetik)
   ];
 
   // Berapa lama setiap foto ditampilkan (dalam milidetik)
