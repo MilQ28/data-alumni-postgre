@@ -46,20 +46,20 @@ $paramIndex = 1; // Counter untuk parameter PostgreSQL ($1, $2, dst)
 if ($search) {
     $s = "%$search%"; // Tambahkan % agar bisa mencari kata yang mengandung huruf tersebut
     // ILIKE pada PostgreSQL setara dengan LIKE pada MySQL (case-insensitive)
-    $where[] = "(nama ILIKE $$paramIndex OR nis ILIKE $" . ($paramIndex+1) . " OR pekerjaan ILIKE $" . ($paramIndex+2) . ")";
+    $where[] = "(a.nama ILIKE $" . $paramIndex . " OR a.nis ILIKE $" . ($paramIndex+1) . " OR a.pekerjaan ILIKE $" . ($paramIndex+2) . ")";
     $params = array_merge($params, [$s, $s, $s]);
     $paramIndex += 3;
 }
 
 // Jika user memilih jurusan dari dropdown
 if ($jurusan) {
-    $where[] = "jurusan = $$paramIndex";
+    $where[] = "a.jurusan = $" . $paramIndex;
     $params[] = $jurusan;
     $paramIndex++;
 }
 
-// 3. Susun query SQL akhir
-$sql = "SELECT * FROM alumni" . ($where ? " WHERE " . implode(" AND ", $where) : "") . " ORDER BY created_at DESC";
+// 3. Susun query SQL akhir - Hanya munculkan yang sudah diapprove
+$sql = "SELECT a.* FROM alumni a JOIN users u ON a.id_alumni = u.id_alumni WHERE u.status = 'approved'" . ($where ? " AND " . implode(" AND ", $where) : "") . " ORDER BY a.created_at DESC";
 
 // Jika ada parameter pencarian, pasangkan parameternya ke query
 if ($params) {

@@ -73,8 +73,25 @@ $jurusan_list = [
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canEdit) {
     // Jika admin murni, lewati semua urusan alumni
     if ($isPureAdmin) {
-        // Hanya boleh ganti password
-        if (!empty($_POST['new_password'])) {
+        // Boleh ganti username dan password
+        $username = trim($_POST['username'] ?? '');
+        if (!$username) {
+            $error = 'Username tidak boleh kosong.';
+        } else {
+            // Cek username duplikat
+            $sres = pg_query_params($conn, "SELECT user_id FROM users WHERE username=$1 AND user_id!=$2", array($username, $_SESSION['user_id']));
+            if (pg_fetch_assoc($sres)) {
+                $error = 'Username sudah digunakan.';
+            } else {
+                pg_query_params($conn, "UPDATE users SET username=$1 WHERE user_id=$2", array($username, $_SESSION['user_id']));
+                $_SESSION['username'] = $username; // Update session!
+                $success = 'Profil berhasil diperbarui.';
+                $alumni['nama'] = $username; // Update local variable for display
+            }
+        }
+        
+        // Ganti password
+        if (!$error && !empty($_POST['new_password'])) {
             $new_pw  = $_POST['new_password'];
             $conf_pw = $_POST['confirm_new_password'] ?? '';
             if (strlen($new_pw) < 6) {
@@ -84,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canEdit) {
             } else {
                 $hashed = password_hash($new_pw, PASSWORD_DEFAULT);
                 pg_query_params($conn, "UPDATE users SET password=$1 WHERE user_id=$2", array($hashed, $_SESSION['user_id']));
-                $success = 'Password berhasil diperbarui.';
+                $success = 'Profil dan password berhasil diperbarui.';
             }
         }
     } else {
@@ -332,6 +349,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canEdit) {
             <div class="input-wrapper">
               <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="top:14px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
               <textarea name="alamat" rows="3" placeholder="Alamat lengkap"><?= htmlspecialchars($alumni['alamat'] ?? '') ?></textarea>
+            </div>
+          </div>
+          <?php else: ?>
+          <div class="form-section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Data Akun Admin
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Username <span class="req">*</span></label>
+              <div class="input-wrapper">
+                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <input type="text" name="username" value="<?= htmlspecialchars($alumni['nama']) ?>" required>
+              </div>
             </div>
           </div>
           <?php endif; ?>
