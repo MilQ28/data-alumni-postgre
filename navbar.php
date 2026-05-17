@@ -50,12 +50,8 @@ $current = basename($_SERVER['PHP_SELF']);
       <?php
       $foto = '';
       if (isset($_SESSION['id_alumni'])) {
-          $s = mysqli_prepare($conn, "SELECT foto_profil, nama FROM alumni WHERE id_alumni = ?");
-          mysqli_stmt_bind_param($s, 'i', $_SESSION['id_alumni']);
-          mysqli_stmt_execute($s);
-          $res = mysqli_stmt_get_result($s);
-          $row = mysqli_fetch_assoc($res);
-          mysqli_stmt_close($s);
+          $res = pg_query_params($conn, "SELECT foto_profil, nama FROM alumni WHERE id_alumni = $1", array($_SESSION['id_alumni']));
+          $row = pg_fetch_assoc($res);
           $foto = $row['foto_profil'] ?? '';
           $namaAlumni = $row['nama'] ?? $_SESSION['username'];
       } else {
