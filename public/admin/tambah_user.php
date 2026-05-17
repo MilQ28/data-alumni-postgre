@@ -15,7 +15,8 @@
   require '../src/auth.php';
   require '../src/koneksi.php';
   requireAdmin();
-  include '../src/navbar.php';
+  $path_prefix = '../';
+include '../src/navbar.php';
 
   $error = $success = '';
   $jurusan_list = [

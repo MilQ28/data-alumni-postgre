@@ -14,6 +14,7 @@ requireAdmin();
 </head>
 <body>
 <?php
+$path_prefix = '../';
 include '../src/navbar.php';
 
 $search = trim($_GET['search'] ?? '');

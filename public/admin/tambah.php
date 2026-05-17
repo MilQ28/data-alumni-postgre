@@ -13,6 +13,7 @@
 require '../src/auth.php';
 require '../src/koneksi.php';
 requireAdmin();
+$path_prefix = '../';
 include '../src/navbar.php';
 
 $error = $success = '';
