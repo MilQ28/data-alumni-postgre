@@ -22,13 +22,14 @@
   const scriptUrl = document.currentScript.src;
   const baseUrl = scriptUrl.substring(0, scriptUrl.lastIndexOf('/js/'));
 
+  const v = "?v=" + Date.now();
   var images = [
-    baseUrl + "/assets/bg-sekolah-1.png",
-    baseUrl + "/assets/bg-sekolah-2.png",
-    baseUrl + "/assets/bg-sekolah-3.png",
-    baseUrl + "/assets/bg-sekolah-4.png",
-    baseUrl + "/assets/bg-sekolah-5.png",
-    baseUrl + "/assets/bg-sekolah-6.png",
+    baseUrl + "/assets/bg-sekolah-1.png" + v,
+    baseUrl + "/assets/bg-sekolah-2.png" + v,
+    baseUrl + "/assets/bg-sekolah-3.png" + v,
+    baseUrl + "/assets/bg-sekolah-4.png" + v,
+    baseUrl + "/assets/bg-sekolah-5.png" + v,
+    baseUrl + "/assets/bg-sekolah-6.png" + v,
   ];
 
   // Kecepatan ganti foto (milidetik): 7000 = 7 detik

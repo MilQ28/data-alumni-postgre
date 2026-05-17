@@ -23,13 +23,14 @@
   const baseUrl = scriptUrl.substring(0, scriptUrl.lastIndexOf('/js/'));
 
   // Daftar foto background. Tambah path foto baru di sini.
+  const v = "?v=" + Date.now();
   var images = [
-    baseUrl + "/assets/bg-sekolah-1.png", // Foto 1 (Upload)
-    baseUrl + "/assets/bg-sekolah-2.png", // Foto 2 (Upload)
-    baseUrl + "/assets/bg-sekolah-3.png", // Foto 3 (Upload)
-    baseUrl + "/assets/bg-sekolah-4.png", // Foto 4 (Upload)
-    baseUrl + "/assets/bg-sekolah-5.png", // Foto 5 (Generate)
-    baseUrl + "/assets/bg-sekolah-6.png", // Foto 6 (Generate)
+    baseUrl + "/assets/bg-sekolah-1.png" + v, // Foto 1 (Upload)
+    baseUrl + "/assets/bg-sekolah-2.png" + v, // Foto 2 (Upload)
+    baseUrl + "/assets/bg-sekolah-3.png" + v, // Foto 3 (Upload)
+    baseUrl + "/assets/bg-sekolah-4.png" + v, // Foto 4 (Upload)
+    baseUrl + "/assets/bg-sekolah-5.png" + v, // Foto 5 (Generate)
+    baseUrl + "/assets/bg-sekolah-6.png" + v, // Foto 6 (Generate)
   ];
 
   // Berapa lama setiap foto ditampilkan (dalam milidetik)
